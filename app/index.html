@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" ng-app="myApp">
+<head>
+  	<meta charset="utf-8">
+  	<title>ng-bcloudc</title>
+  	<link rel="stylesheet" href="css/app.css"/>
+	<link rel="icon" href="http://getbootstrap.com/favicon.ico">
+	<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    	<link href="http://getbootstrap.com/examples/signin/signin.css" rel="stylesheet">
+
+	<style>
+		.form-control.ng-valid {
+			border-color:#51F754;
+		}
+		#map-canvas { 
+			height: 500px;
+			width: 1020px; 
+		}
+	</style>
+</head>
+<body>
+  	<ul class="menu">
+    		<li><a href="#/login">login</a></li>
+    		<li><a href="#/home">home</a></li>
+    		<li><a href="#/logout">logout</a></li>
+<!--
+    		<li><a href="#/view1">view1</a></li>
+    		<li><a href="#/view2">view2</a></li>
+-->
+  	</ul>
+  	<div ng-view></div>
+
+	<script src="lib/angular/angular.js"></script>
+	<script src="lib/angular/angular-route.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/services.js"></script>
+	<script src="js/controllers.js"></script>
+	<script src="js/filters.js"></script>
+	<script src="js/directives.js"></script>
+
+	<script src="login/login.js"></script>
+	<script src="home/home.js"></script>
+	<script src="logout/logout.js"></script>
+	<script src="https://cdn.firebase.com/js/client/1.0.18/firebase.js"></script> 
+<!--	<script src='https://cdn.firebase.com/js/client/1.1.1/firebase.js'></script> -->
+	<script src="https://cdn.firebase.com/libs/angularfire/0.8.0/angularfire.min.js"></script>
+	<script src="https://cdn.firebase.com/js/simple-login/1.6.2/firebase-simple-login.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5Hsb6nr_wjoRkpEmOYiXCYuecjmUwT6A" type="text/javascript"></script>
+</body>
+</html>

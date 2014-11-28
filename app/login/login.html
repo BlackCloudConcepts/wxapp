@@ -1,0 +1,26 @@
+<div ng-controller="LoginCtrl as ctrl"> 
+    	<div class="container">
+        	<div class="jumbotron" style="padding-bottom:0px;">
+            		<h2></h2>
+        	</div>
+        	<form class="form-signin" role="form" name="myForm" ng-submit="ctrl.SignIn($event)">
+            		<input ng-model="ctrl.user.email" type="email" class="form-control" placeholder="Email address" required="" autofocus="" ng-minlength="4" name="uname">
+			<span ng-show="myForm.uname.$error.required">This is a required field</span>
+			<span ng-show="myForm.uname.$error.minlength">Minimum length required is 4 chars</span>
+			<span ng-show="myForm.uname.$invalid">This field is invalid</span>
+            		<input ng-model="ctrl.user.password" type="password" class="form-control" placeholder="Password" required="" name="pwd">
+			<span ng-show="myForm.pwd.$error.required">This is a required field</span>
+            		<label class="checkbox">
+                		<a href="#">Sign Up</a>
+			</label>
+			<input type="submit" value="Sign In" ng-disabled="myForm.$invalid" class="btn btn-lg btn-primary btn-block" />
+<!--        		<button ng-disabled="myForm.$invalid" ng-click="ctrl.SignIn($event)" class="btn btn-lg btn-primary btn-block" type="button">Sign in</button>-->
+      		</form>
+ 
+    	</div>
+	<div>Messages:</div>
+	<div ng-bind="ctrl.messages">
+	</div>
+</div> 
+   
+ 
