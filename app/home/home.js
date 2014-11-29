@@ -70,11 +70,21 @@ function FirebaseServiceFeed(){
 
 function TemperatureFilter(){
 	return function(kelvin){
+		return getTemperature(kelvin);
+/*
 		var f = (9/5)*(kelvin - 273) + 32;
 		var multiplier = Math.pow(10,2);
 		f = Math.round(f * multiplier) / multiplier;
 		return f;
+*/
 	};
+}
+
+function getTemperature(kelvin){
+	var f = (9/5)*(kelvin - 273) + 32;
+       	var multiplier = Math.pow(10,2);
+        f = Math.round(f * multiplier) / multiplier;
+        return f;
 }
 
 function getCookie(cname) {
@@ -101,15 +111,15 @@ function GoogleMap(arrCities){
 	for (var i = 0;i < arrCities.length;i++){
 		(function(){
 			var name = arrCities[i].name;
-			var temp = arrCities[i].main.temp;
+			var temp = getTemperature(arrCities[i].main.temp);
 			var pressure = arrCities[i].main.pressure;
 			var humidity = arrCities[i].main.humidity;
 			var contentString = '<div id="content" style="width:200px">'+
 				'<div id="bodyContent">'+
 				'<div>'+name+'</div>'+
-				'<div style="font-size:8pt;">Temperature: '+temp+'</div>'+
-				'<div style="font-size:8pt;">Pressure: '+pressure+'</div>'+
-				'<div style="font-size:8pt;">Humidity: '+humidity+'</div>'+
+				'<div style="font-size:8pt;">Temperature: '+temp+' &deg;F</div>'+
+				'<div style="font-size:8pt;">Pressure: '+pressure+' mb</div>'+
+				'<div style="font-size:8pt;">Humidity: '+humidity+' %</div>'+
 				'</div>'+
 				'</div>';
 
