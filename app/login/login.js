@@ -11,13 +11,13 @@ angular.module('myApp.login', ['ngRoute','firebase'])
 }])
  
 // Login controller
-//.controller('HomeCtrl', ['FirebaseService', '$scope', '$firebaseSimpleLogin', FirebaseLoginController])
+//.controller('HomeCtrl', ['FirebaseService', '$scope', FirebaseLoginController])
 .controller('LoginCtrl', FirebaseLoginController)
-.service('FirebaseService', ['$firebaseSimpleLogin', FirebaseService]);
+.service('FirebaseService', [FirebaseService]);
 
-FirebaseLoginController.$inject =  ['FirebaseService', '$scope', '$firebaseSimpleLogin'];
+FirebaseLoginController.$inject =  ['FirebaseService', '$scope'];
 
-function FirebaseLoginController(FirebaseService, $scope, $firebaseSimpleLogin) {
+function FirebaseLoginController(FirebaseService, $scope) {
 	var self = this;
 	this.messages = "start";
 	this.messages = "middle";
@@ -26,8 +26,7 @@ function FirebaseLoginController(FirebaseService, $scope, $firebaseSimpleLogin) 
 			self.messages = "end"; 
 		});
 	}, 3000);
-	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com");
-        var loginObj = $firebaseSimpleLogin(firebaseObj);
+	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 	this.SignIn = function(e) {	
 		e.preventDefault();
 		var username = self.user.email;
@@ -36,8 +35,29 @@ function FirebaseLoginController(FirebaseService, $scope, $firebaseSimpleLogin) 
 	} 
 }
 
-function FirebaseService($firebaseSimpleLogin){
-	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com");
+function FirebaseService(){
+	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
+
+	this.login = function(username, password, $scope, callback){
+		firebaseObj.authWithPassword({
+				email    : username,
+				password : password
+			}, function(err, authData) {
+				if (err){
+					console.log(err);
+				} else {
+					//Success callback
+		                        console.log('Authentication successful');
+                		        // set cookie
+		                        document.cookie="username="+username+"; expires=Thu, 18 Dec 2023 12:00:00 UTC; path=/";
+                		        // redirect to home
+		                        location = "#home";	
+				}
+			}
+		);
+	};
+
+/* // using simple login which is deprecated
         var loginObj = $firebaseSimpleLogin(firebaseObj);
 
 	// public functions
@@ -58,6 +78,7 @@ function FirebaseService($firebaseSimpleLogin){
 			console.log('Authentication failure');
 		    });
 	}
+*/
 }
 
 })(); // END IIFE

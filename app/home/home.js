@@ -12,25 +12,24 @@ angular.module('myApp.home', ['ngRoute','firebase'])
 }])
  
 // Home controller
-//.controller('HomeCtrl', ['FirebaseService', '$scope', '$firebaseSimpleLogin', FirebaseLoginController]) // replaced with $inject
+//.controller('HomeCtrl', ['FirebaseService', '$scope', FirebaseLoginController]) // replaced with $inject
 .controller('HomeCtrl', FirebaseLoginController)
-.service('FirebaseServiceFeed', ['$firebaseSimpleLogin', FirebaseServiceFeed])
+.service('FirebaseServiceFeed', [FirebaseServiceFeed])
 .filter('toF', TemperatureFilter);
 
-FirebaseLoginController.$inject =  ['FirebaseServiceFeed', '$scope', '$firebaseSimpleLogin'];
+FirebaseLoginController.$inject =  ['FirebaseServiceFeed', '$scope'];
 
-function FirebaseLoginController(FirebaseServiceFeed, $scope, $firebaseSimpleLogin) {
+function FirebaseLoginController(FirebaseServiceFeed, $scope) {
 	var self = this;
 	
 	if (getCookie('username') != ''){
-		var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com");
 		FirebaseServiceFeed.feed($scope, self);
 	} else {
 		location = '#login';
 	}
 }
 
-function FirebaseServiceFeed($firebaseSimpleLogin){
+function FirebaseServiceFeed(){
 	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 
 	// public functions
