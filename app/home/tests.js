@@ -9,28 +9,14 @@ describe('Controller: HomeCtrl', function() {
 
 	beforeEach(inject(function($controller, FirebaseServiceFeed, $rootScope) {	
 		$scope = $rootScope.$new();
-//		$scope = {};
 		serivce = FirebaseServiceFeed;	
 		ctrl = $controller('HomeCtrl', {$scope: $scope, FirebaseServiceFeed:service});
 	}));
 
   	it('should have items available on load', function() {
 		expect('1').toEqual('1');
-//    		expect(ctrl.messages).toEqual('middle');
   	});
 
-/*
-	it('should be able to sign in', function(){
-		ctrl.user = {};
-		ctrl.user.email = "blackcloudconcepts@gmail.com";
-		ctrl.user.password = 'blackcloud';
-		ctrl.SignIn();
-		setTimeout(function(){
-console.log(ctrl.success);
-			expect(ctrl.success).toEqual(true);
-		},3000);
-	});
-*/
 });
 
 
