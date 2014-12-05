@@ -49,6 +49,7 @@ function FirebaseService(){
 					//Success callback
 		                        console.log('Authentication successful');
                 		        // set cookie
+					$scope.success = true;
 		                        document.cookie="username="+username+"; expires=Thu, 18 Dec 2023 12:00:00 UTC; path=/";
                 		        // redirect to home
 		                        location = "#home";	

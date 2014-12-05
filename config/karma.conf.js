@@ -1,31 +1,81 @@
-module.exports = function(config){
-    config.set({
-    basePath : '../',
+// Karma configuration
+// Generated on Fri Dec 05 2014 10:41:44 GMT-0600 (CST)
 
-    files : [
-      'app/lib/angular/angular.js',
-      'app/lib/angular/angular-*.js',
-      'test/lib/angular/angular-mocks.js',
-      'app/js/**/*.js',
-      'test/unit/**/*.js'
-    ],
+module.exports = function(config) {
+  config.set({
 
-    autoWatch : true,
+    // base path that will be used to resolve all patterns (eg. files, exclude)
+    basePath: '',
 
+
+    // frameworks to use
+    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-    browsers : ['Chrome'],
 
-    plugins : [
-            'karma-junit-reporter',
-            'karma-chrome-launcher',
-            'karma-firefox-launcher',
-            'karma-jasmine'       
-            ],
+    // list of files / patterns to load in the browser
+    files: [
+	"../app/lib/angular/angular.js",
+	"../app/lib/angular/angular-route.js",	
+	"../karmatests/angular-mocks.js",
+	"../app/js/app.js",
+	"../app/js/services.js",
+	"../app/js/controllers.js",
+	"../app/js/filters.js",
+	"../app/js/directives.js",
+	"../app/login/login.js",
+	"../app/home/home.js",
+	"../app/logout/logout.js",
+	"https://cdn.firebase.com/js/client/1.1.1/firebase.js",
+	"https://cdn.firebase.com/libs/angularfire/0.8.0/angularfire.min.js",
+	"https://maps.googleapis.com/maps/api/js?key=AIzaSyD5Hsb6nr_wjoRkpEmOYiXCYuecjmUwT6A",
+	"../app/login/tests.js",
+	"../app/home/tests.js",
+	"../app/logout/tests.js"
+    ],
 
-    junitReporter : {
-      outputFile: 'test_out/unit.xml',
-      suite: 'unit'
-    }
 
-})}
+    // list of files to exclude
+    exclude: [
+    ],
+
+
+    // preprocess matching files before serving them to the browser
+    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    preprocessors: {
+    },
+
+
+    // test results reporter to use
+    // possible values: 'dots', 'progress'
+    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+    reporters: ['progress'],
+
+
+    // web server port
+    port: 9876,
+
+
+    // enable / disable colors in the output (reporters and logs)
+    colors: true,
+
+
+    // level of logging
+    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    logLevel: config.LOG_INFO,
+
+
+    // enable / disable watching file and executing tests whenever any file changes
+    autoWatch: true,
+
+
+    // start these browsers
+    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+    browsers: ['Chrome'],
+
+
+    // Continuous Integration mode
+    // if true, Karma captures browsers, runs the tests and exits
+    singleRun: false
+  });
+};
