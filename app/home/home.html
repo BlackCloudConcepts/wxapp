@@ -1,15 +1,11 @@
 <div ng-controller="HomeCtrl as ctrl"> 
     	<div class="container">
         	<div class="jumbotron" style="padding-bottom:0px;">
-<!--
-			<div style="float:left;width:200px;">&nbsp;</div>
-			<div style="float:left;width:200px;font-weight:bold;">Temperature</div>
-			<div style="float:left;width:200px;font-weight:bold;">Pressure</div>
-			<div style="float:left;width:200px;font-weight:bold;">Humidity</div>
-			<div style="clear:both;"></div>
-			<hr/>
--->
-			<h3>Central Texas WX</h3>
+			<tabset vertical="false" type="pills">
+    				<tab heading="TX" ng-click="ctrl.switchRegion($event,'TX')">Current weather conditions for central Texas centering around the Austin area.</tab>
+    				<tab heading="OK" ng-click="ctrl.switchRegion($event,'OK')">Current weather conditions for central Oklahoma centering around the Oklahoma City area.</tab>
+  			</tabset>
+			<h3>Current Weather Conditions for: {{ctrl.currentRegion}}</h3>
 			<div style="height:200px;overflow-y:auto;">
 				<table class="table table-striped">
 					<tr style="background-color:#CFE8F7">
@@ -18,7 +14,7 @@
 						<th style="width:200px;font-weight:bold;">Pressure</th>
 						<th style="width:200px;font-weight:bold;">Humidity</th>
 					</tr>
-					<tr ng-repeat="city in ctrl.cities">
+					<tr ng-repeat="city in ctrl.cities | filter:{region:ctrl.currentRegion}">
 						<td style="width:200px;font-weight:bold;">{{city.name}}</td>
 						<td style="width:200px;">{{city.main.temp | toF}} &deg;F</td>
 						<td style="width:200px;">{{city.main.pressure}} mb</td>
@@ -26,15 +22,6 @@
 					</tr>
 				</table>
 			</div>
-<!--
-            		<div ng-repeat="city in ctrl.cities">
-				<div style="float:left;width:200px;">{{city.name}}</div>
-				<div style="float:left;width:200px;">{{city.main.temp | toF}} &deg;F</div>
-				<div style="float:left;width:200px;">{{city.main.pressure}} mb</div>
-				<div style="float:left;width:200px;">{{city.main.humidity}} %</div>
-				<div style="clear:both;"></div>
-			</div>
--->
 			<hr/>
 			<div id="map-canvas"></div>
         	</div>

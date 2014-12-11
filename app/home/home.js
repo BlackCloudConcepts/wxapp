@@ -22,6 +22,7 @@ FirebaseServiceFeed.$inject = ['$q'];
 
 function FirebaseLoginController(FirebaseServiceFeed, $scope) {
 	var self = this;
+	this.currentRegion = 'TX';
 /*
 	if (getCookie('username') != ''){
 		FirebaseServiceFeed.feed($scope, self);
@@ -44,7 +45,11 @@ function FirebaseLoginController(FirebaseServiceFeed, $scope) {
 		location = '#login';	
 	}
 
-
+	this.switchRegion = function(evt, region){
+		evt.stopPropagation();
+		self.currentRegion = region;
+		GoogleMap(self.cities, self);
+	};
 }
 
 function FirebaseServiceFeed($q){
@@ -66,7 +71,7 @@ function FirebaseServiceFeed($q){
 //                        $scope.$apply(function(){
                              callback.cities = arrCities;
 //                        });
-                        GoogleMap(arrCities);
+                        GoogleMap(arrCities, callback);
 		}, function(error) {
   			alert('Failed: ' + error);
 		});
@@ -95,7 +100,7 @@ function FirebaseServiceFeed($q){
 					$scope.$apply(function(){
 						arrCities[i] = message;
 						document.getElementById('map-canvas').innerHTML = '';
-						GoogleMap(arrCities);
+						GoogleMap(arrCities,callback);
 					});
 				}
 			}
@@ -142,7 +147,16 @@ function getCookie(cname) {
     return "";
 }
 
-function GoogleMap(arrCities){
+function GoogleMap(arrCities, _controller){
+	// filter out cities by region
+	var arr = [];
+	for (var i = 0;i < arrCities.length; i++){
+		if (arrCities[i].region == _controller.currentRegion){
+			arr.push(arrCities[i]);
+		}
+	}
+	arrCities = arr;
+
 	// draw map
 	var mapOptions = {
 		center: { lat: arrCities[0].coord.lat, lng: arrCities[0].coord.lon},
