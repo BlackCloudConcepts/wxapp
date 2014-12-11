@@ -19,6 +19,7 @@ FirebaseLoginController.$inject =  ['FirebaseService', '$scope'];
 
 function FirebaseLoginController(FirebaseService, $scope) {
 	var self = this;
+/*
 	this.messages = "start";
 	this.messages = "middle";
 	setTimeout(function(){ 
@@ -26,6 +27,7 @@ function FirebaseLoginController(FirebaseService, $scope) {
 			self.messages = "end"; 
 		});
 	}, 3000);
+*/
 	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 	this.SignIn = function(e) {	
 		e.preventDefault();
