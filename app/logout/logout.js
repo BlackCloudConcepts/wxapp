@@ -10,11 +10,14 @@ angular.module('myApp.logout', ['ngRoute'])
     });
 }])
  
-// Login controller
-.controller('LogoutCtrl', LogoutController);
+// Define controller, services, factories, providers, filters
+.controller('LogoutController', LogoutController);
 
+// Dependency injections to controller, services, factories, providers, filters
 LogoutController.$inject =  ['$scope'];
 
+// -- Function defining LogoutController
+// input : scope
 function LogoutController($scope) {
 	var self = this;
 

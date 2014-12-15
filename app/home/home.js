@@ -1,5 +1,5 @@
 'use strict';
-//(function(){ // START IIFE
+(function(){ // START IIFE
 
 angular.module('myApp.home', ['ngRoute','firebase'])
  
@@ -11,25 +11,21 @@ angular.module('myApp.home', ['ngRoute','firebase'])
     });
 }])
  
-// Home controller
-//.controller('HomeCtrl', ['FirebaseService', '$scope', FirebaseLoginController]) // replaced with $inject
-.controller('HomeCtrl', FirebaseLoginController)
-.service('FirebaseServiceFeed', FirebaseServiceFeed)
-.filter('toF', TemperatureFilter);
+// Define controller, services, factories, providers, filters
+.controller('HomeController', HomeController)
+.service('FirebaseFeedService', FirebaseFeedService)
+.filter('TemperatureFilter', TemperatureFilter);
 
-FirebaseLoginController.$inject =  ['FirebaseServiceFeed', '$scope'];
-FirebaseServiceFeed.$inject = ['$q'];
+// Dependency injections to controller, services, factories, providers, filters
+HomeController.$inject =  ['FirebaseFeedService', '$scope'];
+FirebaseFeedService.$inject = ['$q'];
 
-function FirebaseLoginController(FirebaseServiceFeed, $scope) {
+// -- Function defining HomeController
+// input : FirebaseFeedService
+// 	 : scope
+function HomeController(FirebaseFeedService, $scope) {
 	var self = this;
 	this.currentRegion = 'TX';
-/*
-	if (getCookie('username') != ''){
-		FirebaseServiceFeed.feed($scope, self);
-	} else {
-		location = '#login';
-	}
-*/
 
 	this.testCookie = function(){
 		if (getCookie('username') != ''){
@@ -40,7 +36,7 @@ function FirebaseLoginController(FirebaseServiceFeed, $scope) {
 	};
 
 	if (this.testCookie()){
-		FirebaseServiceFeed.feed($scope, self);
+		FirebaseFeedService.feed($scope, self);
 	} else {
 		location = '#login';	
 	}
@@ -52,7 +48,9 @@ function FirebaseLoginController(FirebaseServiceFeed, $scope) {
 	};
 }
 
-function FirebaseServiceFeed($q){
+// -- Function defining FirebaseFeedService
+// input : $q promise
+function FirebaseFeedService($q){
 	var self = this;
 	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 
@@ -68,29 +66,11 @@ function FirebaseServiceFeed($q){
                                 arrCities.push(message[key]);
                         });
 
-//                        $scope.$apply(function(){
-                             callback.cities = arrCities;
-//                        });
+                        callback.cities = arrCities;
                         GoogleMap(arrCities, callback);
 		}, function(error) {
   			alert('Failed: ' + error);
 		});
-/*
-		firebaseObj.once('value', function(snapshot) {
-			var message = snapshot.val();
-
-			// convert obj to array
-			Object.keys(message).forEach(function(key) {
-				arrCities.push(message[key]);
-			});
-
-			$scope.$apply(function(){
-			     callback.cities = arrCities;
-			});
-			GoogleMap(arrCities);
-
-		});
-*/
 
 		// handles updates
 		firebaseObj.on('child_changed', function(snapshot) {
@@ -117,18 +97,18 @@ function FirebaseServiceFeed($q){
 	};
 }
 
+// -- Function defining TemperatureFilter
+// input : None
+// output : 
 function TemperatureFilter(){
 	return function(kelvin){
 		return getTemperature(kelvin);
-/*
-		var f = (9/5)*(kelvin - 273) + 32;
-		var multiplier = Math.pow(10,2);
-		f = Math.round(f * multiplier) / multiplier;
-		return f;
-*/
 	};
 }
 
+// -- calculates fahrenheit from kelvin
+// input : kelvin
+// output : fahrenheit
 function getTemperature(kelvin){
 	var f = (9/5)*(kelvin - 273) + 32;
        	var multiplier = Math.pow(10,2);
@@ -136,6 +116,9 @@ function getTemperature(kelvin){
         return f;
 }
 
+// -- generic function for dealing with cookie rerieval
+// input : cookie name
+// output : cookie value
 function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
@@ -147,6 +130,9 @@ function getCookie(cname) {
     return "";
 }
 
+// -- generic function for creating google maps
+// input : array of city data
+// 	 : reference to controller scope
 function GoogleMap(arrCities, _controller){
 	// filter out cities by region
 	var arr = [];
@@ -202,4 +188,4 @@ function GoogleMap(arrCities, _controller){
 	}
 }
 
-//})(); // END IIFE
+})(); // END IIFE

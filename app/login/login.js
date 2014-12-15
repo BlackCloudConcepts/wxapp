@@ -9,25 +9,18 @@ angular.module('myApp.login', ['ngRoute','firebase'])
         templateUrl: 'login/login.html'
     });
 }])
- 
-// Login controller
-//.controller('HomeCtrl', ['FirebaseService', '$scope', FirebaseLoginController])
-.controller('LoginCtrl', FirebaseLoginController)
+
+// Define controller, services, factories, providers, filters 
+.controller('LoginController', LoginController)
 .service('FirebaseService', [FirebaseService]);
 
-FirebaseLoginController.$inject =  ['FirebaseService', '$scope'];
+// Dependency injections to controller, services, factories, providers, filters
+LoginController.$inject =  ['FirebaseService', '$scope'];
 
-function FirebaseLoginController(FirebaseService, $scope) {
+// Function defining LoginController
+function LoginController(FirebaseService, $scope) {
 	var self = this;
-/*
-	this.messages = "start";
-	this.messages = "middle";
-	setTimeout(function(){ 
-		$scope.$apply(function(){ // this forces the UI to refresh
-			self.messages = "end"; 
-		});
-	}, 3000);
-*/
+
 	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 	this.SignIn = function(e) {	
 		e.preventDefault();
@@ -37,6 +30,8 @@ function FirebaseLoginController(FirebaseService, $scope) {
 	} 
 }
 
+// Function defining FirebaseService
+// input : None
 function FirebaseService(){
 	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 
@@ -59,29 +54,6 @@ function FirebaseService(){
 			}
 		);
 	};
-
-/* // using simple login which is deprecated
-        var loginObj = $firebaseSimpleLogin(firebaseObj);
-
-	// public functions
-	this.login = function(username, password, $scope, callback){
-		loginObj.$login('password', {
-			email: username,
-			password: password
-		    })
-		    .then(function(user) {
-			//Success callback
-			console.log('Authentication successful');
-			// set cookie
-			document.cookie="username="+username+"; expires=Thu, 18 Dec 2023 12:00:00 UTC; path=/";
-			// redirect to home
-			location = "#home";
-		    }, function(error) {
-			//Failure callback
-			console.log('Authentication failure');
-		    });
-	}
-*/
 }
 
 })(); // END IIFE
