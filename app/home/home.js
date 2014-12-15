@@ -73,6 +73,8 @@ function FirebaseFeedService($q){
 		});
 
 		// handles updates
+		// Would be nice to wrap these updates into a promise to keep them in the digest cycle
+		// simple promises won't work since they only resolve once.
 		firebaseObj.on('child_changed', function(snapshot) {
 			var message = snapshot.val();
 			for (var i = 0;i < arrCities.length;i++){
