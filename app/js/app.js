@@ -2,15 +2,15 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('myApp', [
+angular.module('wxApp', [
   	'ngRoute',
-	'myApp.login',
-	'myApp.home',
-	'myApp.logout',
-  	'myApp.filters',
-  	'myApp.services',
-  	'myApp.directives',
-  	'myApp.controllers',
+	'wxApp.modules.login',
+	'wxApp.modules.home',
+	'wxApp.modules.logout',
+  	'wxApp.filters',
+  	'wxApp.services',
+  	'wxApp.directives',
+  	'wxApp.controllers',
 	'ui.bootstrap'
 ]).
 config(['$routeProvider', function($routeProvider) {

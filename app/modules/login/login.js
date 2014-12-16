@@ -1,12 +1,12 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('myApp.login', ['ngRoute','firebase'])
+angular.module('wxApp.modules.login', ['ngRoute','firebase'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/login', {
-        templateUrl: 'login/login.html'
+        templateUrl: 'modules/login/login.html'
     });
 }])
 

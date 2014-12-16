@@ -1,12 +1,12 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('myApp.logout', ['ngRoute'])
+angular.module('wxApp.modules.logout', ['ngRoute'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/logout', {
-        templateUrl: 'logout/logout.html'
+        templateUrl: 'modules/logout/logout.html'
     });
 }])
  

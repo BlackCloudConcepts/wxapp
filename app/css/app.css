@@ -28,3 +28,12 @@
   content: "";
   padding: 0;
 }
+
+.form-control.ng-valid {
+	border-color:#51F754;
+}
+
+#map-canvas {
+	height: 500px;
+	width: 1020px;
+}

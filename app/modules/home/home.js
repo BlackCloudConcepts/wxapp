@@ -1,12 +1,12 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('myApp.home', ['ngRoute','firebase'])
+angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/home', {
-        templateUrl: 'home/home.html'//,
+        templateUrl: 'modules/home/home.html'//,
 //        controller: 'HomeCtrl' (removed since the html was also referencing the controller causing it to happen twice)
     });
 }])
@@ -17,18 +17,18 @@ angular.module('myApp.home', ['ngRoute','firebase'])
 .filter('TemperatureFilter', TemperatureFilter);
 
 // Dependency injections to controller, services, factories, providers, filters
-HomeController.$inject =  ['FirebaseFeedService', '$scope'];
+HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'GetCookiesService'];
 FirebaseFeedService.$inject = ['$q'];
 
 // -- Function defining HomeController
 // input : FirebaseFeedService
 // 	 : scope
-function HomeController(FirebaseFeedService, $scope) {
+function HomeController($scope, FirebaseFeedService, GetCookiesService) {
 	var self = this;
 	this.currentRegion = 'TX';
 
 	this.testCookie = function(){
-		if (getCookie('username') != ''){
+		if (GetCookiesService.getCookie('username') != ''){
 			return true;
 		} else {
 			return false;
@@ -116,20 +116,6 @@ function getTemperature(kelvin){
        	var multiplier = Math.pow(10,2);
         f = Math.round(f * multiplier) / multiplier;
         return f;
-}
-
-// -- generic function for dealing with cookie rerieval
-// input : cookie name
-// output : cookie value
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-        if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
-    }
-    return "";
 }
 
 // -- generic function for creating google maps
