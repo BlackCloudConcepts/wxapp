@@ -1,7 +1,7 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies'])
+angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {
@@ -17,18 +17,19 @@ angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.c
 .filter('TemperatureFilter', TemperatureFilter);
 
 // Dependency injections to controller, services, factories, providers, filters
-HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'GetCookiesService'];
-FirebaseFeedService.$inject = ['$q'];
+HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'CookiesService', 'ConversionsService'];
+FirebaseFeedService.$inject = ['$q', 'ConversionsService'];
+TemperatureFilter.$inject = ['ConversionsService'];
 
 // -- Function defining HomeController
 // input : FirebaseFeedService
 // 	 : scope
-function HomeController($scope, FirebaseFeedService, GetCookiesService) {
+function HomeController($scope, FirebaseFeedService, CookiesService, ConversionsService) {
 	var self = this;
 	this.currentRegion = 'TX';
 
 	this.testCookie = function(){
-		if (GetCookiesService.getCookie('username') != ''){
+		if (CookiesService.getCookie('username') != ''){
 			return true;
 		} else {
 			return false;
@@ -44,13 +45,13 @@ function HomeController($scope, FirebaseFeedService, GetCookiesService) {
 	this.switchRegion = function(evt, region){
 		evt.stopPropagation();
 		self.currentRegion = region;
-		GoogleMap(self.cities, self);
+		GoogleMap(self.cities, self, ConversionsService);
 	};
 }
 
 // -- Function defining FirebaseFeedService
 // input : $q promise
-function FirebaseFeedService($q){
+function FirebaseFeedService($q, ConversionsService){
 	var self = this;
 	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 
@@ -67,14 +68,14 @@ function FirebaseFeedService($q){
                         });
 
                         callback.cities = arrCities;
-                        GoogleMap(arrCities, callback);
+                        GoogleMap(arrCities, callback, ConversionsService);
 		}, function(error) {
   			alert('Failed: ' + error);
 		});
 
 		// handles updates
 		// Would be nice to wrap these updates into a promise to keep them in the digest cycle
-		// simple promises won't work since they only resolve once.
+		// simple promises won't work since they only resolve once and there is no notify.
 		firebaseObj.on('child_changed', function(snapshot) {
 			var message = snapshot.val();
 			for (var i = 0;i < arrCities.length;i++){
@@ -82,7 +83,7 @@ function FirebaseFeedService($q){
 					$scope.$apply(function(){
 						arrCities[i] = message;
 						document.getElementById('map-canvas').innerHTML = '';
-						GoogleMap(arrCities,callback);
+						GoogleMap(arrCities,callback,ConversionsService);
 					});
 				}
 			}
@@ -102,26 +103,16 @@ function FirebaseFeedService($q){
 // -- Function defining TemperatureFilter
 // input : None
 // output : 
-function TemperatureFilter(){
+function TemperatureFilter(ConversionsService){
 	return function(kelvin){
-		return getTemperature(kelvin);
+		return ConversionsService.getTemperatureKelvinToFahrenheit(kelvin);
 	};
-}
-
-// -- calculates fahrenheit from kelvin
-// input : kelvin
-// output : fahrenheit
-function getTemperature(kelvin){
-	var f = (9/5)*(kelvin - 273) + 32;
-       	var multiplier = Math.pow(10,2);
-        f = Math.round(f * multiplier) / multiplier;
-        return f;
 }
 
 // -- generic function for creating google maps
 // input : array of city data
 // 	 : reference to controller scope
-function GoogleMap(arrCities, _controller){
+function GoogleMap(arrCities, _controller, ConversionsService){
 	// filter out cities by region
 	var arr = [];
 	for (var i = 0;i < arrCities.length; i++){
@@ -143,7 +134,7 @@ function GoogleMap(arrCities, _controller){
 	for (var i = 0;i < arrCities.length;i++){
 		(function(){
 			var name = arrCities[i].name;
-			var temp = getTemperature(arrCities[i].main.temp);
+			var temp = ConversionsService.getTemperatureKelvinToFahrenheit(arrCities[i].main.temp);
 			var pressure = arrCities[i].main.pressure;
 			var humidity = arrCities[i].main.humidity;
 			var contentString = '<div id="content" style="width:200px">'+

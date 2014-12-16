@@ -2,9 +2,9 @@
 (function(){ // START IIFE
 
 angular.module('wxApp.coremodules.cookies', [])
-.service('GetCookiesService', GetCookiesService);
+.service('CookiesService', CookiesService);
 
-function GetCookiesService(){
+function CookiesService(){
 
 	// -- generic function for dealing with cookie rerieval
 	// // input : cookie name
