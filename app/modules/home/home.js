@@ -1,7 +1,7 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase'])
+angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase', 'wxApp.coremodules.maps'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {
@@ -17,14 +17,14 @@ angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.c
 .filter('TemperatureFilter', TemperatureFilter);
 
 // Dependency injections to controller, services, factories, providers, filters
-HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'CookiesService', 'ConversionsService'];
-FirebaseFeedService.$inject = ['ConversionsService', 'FirebaseDataService'];
+HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'CookiesService', 'MapsService'];
+FirebaseFeedService.$inject = ['FirebaseDataService', 'MapsService'];
 TemperatureFilter.$inject = ['ConversionsService'];
 
 // -- Function defining HomeController
 // input : FirebaseFeedService
 // 	 : scope
-function HomeController($scope, FirebaseFeedService, CookiesService, ConversionsService) {
+function HomeController($scope, FirebaseFeedService, CookiesService, MapsService) {
 	var self = this;
 	this.currentRegion = 'TX';
 
@@ -45,15 +45,14 @@ function HomeController($scope, FirebaseFeedService, CookiesService, Conversions
 	this.switchRegion = function(evt, region){
 		evt.stopPropagation();
 		self.currentRegion = region;
-		GoogleMap(self.cities, self, ConversionsService);
+		MapsService.drawMap(self.cities, self.currentRegion, 'map-canvas');
 	};
 }
 
 // -- Function defining FirebaseFeedService
 // input : $q promise
-function FirebaseFeedService(ConversionsService, FirebaseDataService){
+function FirebaseFeedService(FirebaseDataService, MapsService){
 	var self = this;
-//	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 
 	// public functions
 	this.feed = function($scope, callback){
@@ -66,7 +65,7 @@ function FirebaseFeedService(ConversionsService, FirebaseDataService){
                         });
 
                         callback.cities = arrCities;
-                        GoogleMap(arrCities, callback, ConversionsService);
+			MapsService.drawMap(arrCities, callback.currentRegion, 'map-canvas');
 		};
 		FirebaseDataService.getFullDataset(callbackFullDataset);
 
@@ -76,7 +75,7 @@ function FirebaseFeedService(ConversionsService, FirebaseDataService){
                                         $scope.$apply(function(){
                                                 arrCities[i] = message;
                                                 document.getElementById('map-canvas').innerHTML = '';
-                                                GoogleMap(arrCities,callback,ConversionsService);
+						MapsService.drawMap(arrCities, callback.currentRegion, 'map-canvas');
                                         });
                                 }
                         }
@@ -92,64 +91,6 @@ function TemperatureFilter(ConversionsService){
 	return function(kelvin){
 		return ConversionsService.getTemperatureKelvinToFahrenheit(kelvin);
 	};
-}
-
-// -- generic function for creating google maps
-// input : array of city data
-// 	 : reference to controller scope
-function GoogleMap(arrCities, _controller, ConversionsService){
-	// filter out cities by region
-	var arr = [];
-	for (var i = 0;i < arrCities.length; i++){
-		if (arrCities[i].region == _controller.currentRegion){
-			arr.push(arrCities[i]);
-		}
-	}
-	arrCities = arr;
-
-	// draw map
-	var mapOptions = {
-		center: { lat: arrCities[0].coord.lat, lng: arrCities[0].coord.lon},
-		zoom: 8
-	};
-	var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-	// add markers
-	var markers = {};
-	for (var i = 0;i < arrCities.length;i++){
-		(function(){
-			var name = arrCities[i].name;
-			var temp = ConversionsService.getTemperatureKelvinToFahrenheit(arrCities[i].main.temp);
-			var pressure = arrCities[i].main.pressure;
-			var humidity = arrCities[i].main.humidity;
-			var contentString = '<div id="content" style="width:200px">'+
-				'<div id="bodyContent">'+
-				'<div>'+name+'</div>'+
-				'<div style="font-size:8pt;">Temperature: '+temp+' &deg;F</div>'+
-				'<div style="font-size:8pt;">Pressure: '+pressure+' mb</div>'+
-				'<div style="font-size:8pt;">Humidity: '+humidity+' %</div>'+
-				'</div>'+
-				'</div>';
-
-			var infowindow = new google.maps.InfoWindow({
-				content: contentString
-			});
-
-			var lat = arrCities[i].coord.lat;
-			var lon = arrCities[i].coord.lon;
-			var marker = new google.maps.Marker({
-				position: new google.maps.LatLng(lat,lon),
-				map: map,
-				title:name,
-				icon:'http://cdnimages.magicseaweed.com/30x30/5.png'
-			});
-			markers[i] = marker;
-			var x = i;
-			google.maps.event.addListener(marker, 'click', function() {
-				infowindow.open(map,markers[x]);
-			});
-		})();
-	}
 }
 
 })(); // END IIFE

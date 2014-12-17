@@ -11,6 +11,7 @@ function FirebaseDataService($q){
 	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 
 	// returns the full dataset for the current weather data
+	// in using promises it keeps the process in the digest cycle
 	// input: callback function
 	// output: calls callback function with data	
 	this.getFullDataset = function(callback){
