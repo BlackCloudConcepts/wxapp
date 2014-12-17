@@ -3,6 +3,7 @@
 
 angular.module('wxApp.coremodules.cookies', [])
 .service('CookiesService', CookiesService);
+CookiesService.$inject = [];
 
 function CookiesService(){
 

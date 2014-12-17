@@ -1,7 +1,7 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions'])
+angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {
@@ -18,7 +18,7 @@ angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.c
 
 // Dependency injections to controller, services, factories, providers, filters
 HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'CookiesService', 'ConversionsService'];
-FirebaseFeedService.$inject = ['$q', 'ConversionsService'];
+FirebaseFeedService.$inject = ['ConversionsService', 'FirebaseDataService'];
 TemperatureFilter.$inject = ['ConversionsService'];
 
 // -- Function defining HomeController
@@ -51,17 +51,15 @@ function HomeController($scope, FirebaseFeedService, CookiesService, Conversions
 
 // -- Function defining FirebaseFeedService
 // input : $q promise
-function FirebaseFeedService($q, ConversionsService){
+function FirebaseFeedService(ConversionsService, FirebaseDataService){
 	var self = this;
-	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
+//	var firebaseObj = new Firebase("https://resplendent-heat-1209.firebaseio.com/wx/");
 
 	// public functions
 	this.feed = function($scope, callback){
 		var arrCities = [];
 
-		// initial page load
-		var promise = self.getOnce();
-		promise.then(function(message) {
+		var callbackFullDataset = function(message){
 			// convert obj to array
                         Object.keys(message).forEach(function(key) {
                                 arrCities.push(message[key]);
@@ -69,34 +67,21 @@ function FirebaseFeedService($q, ConversionsService){
 
                         callback.cities = arrCities;
                         GoogleMap(arrCities, callback, ConversionsService);
-		}, function(error) {
-  			alert('Failed: ' + error);
-		});
+		};
+		FirebaseDataService.getFullDataset(callbackFullDataset);
 
-		// handles updates
-		// Would be nice to wrap these updates into a promise to keep them in the digest cycle
-		// simple promises won't work since they only resolve once and there is no notify.
-		firebaseObj.on('child_changed', function(snapshot) {
-			var message = snapshot.val();
+		var callbackUpdates = function(message){
 			for (var i = 0;i < arrCities.length;i++){
-				if (message.name == arrCities[i].name){
-					$scope.$apply(function(){
-						arrCities[i] = message;
-						document.getElementById('map-canvas').innerHTML = '';
-						GoogleMap(arrCities,callback,ConversionsService);
-					});
-				}
-			}
-		});
-	};
-
-	this.getOnce = function(){
-		var deferred = $q.defer();
-		firebaseObj.once('value', function(snapshot) {
-			var message = snapshot.val();
-			deferred.resolve(message);
-		});	
-		return deferred.promise;
+                                if (message.name == arrCities[i].name){
+                                        $scope.$apply(function(){
+                                                arrCities[i] = message;
+                                                document.getElementById('map-canvas').innerHTML = '';
+                                                GoogleMap(arrCities,callback,ConversionsService);
+                                        });
+                                }
+                        }
+		};
+		FirebaseDataService.getUpdates(callbackUpdates);
 	};
 }
 

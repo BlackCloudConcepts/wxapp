@@ -3,6 +3,7 @@
 
 angular.module('wxApp.coremodules.conversions', [])
 .service('ConversionsService', ConversionsService);
+ConversionsService.$inject = [];
 
 function ConversionsService(){
 
