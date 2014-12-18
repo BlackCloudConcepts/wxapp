@@ -1,6 +1,6 @@
-describe('Controller: LoginCtrl', function() {
+describe('Controller: LoginController', function() {
   	// Instantiate a new version of my module before each test
-  	beforeEach(module('myApp.login'));
+  	beforeEach(module('wxApp.modules.login'));
 
   	var ctrl, scope, service;
 
@@ -11,7 +11,7 @@ describe('Controller: LoginCtrl', function() {
 		$scope = $rootScope.$new();
 //		$scope = {};
 		serivce = FirebaseService;	
-		ctrl = $controller('LoginCtrl', {$scope: $scope, FirebaseService:service});
+		ctrl = $controller('LoginController', {$scope: $scope, FirebaseService:service});
 	}));
 
   	it('should have items available on load', function() {

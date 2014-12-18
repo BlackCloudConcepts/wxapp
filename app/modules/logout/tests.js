@@ -1,6 +1,6 @@
-describe('Controller: LogoutCtrl', function() {
+describe('Controller: LogoutController', function() {
   	// Instantiate a new version of my module before each test
-  	beforeEach(module('myApp.logout'));
+  	beforeEach(module('wxApp.modules.logout'));
 
   	var ctrl, scope, service;
 
@@ -9,7 +9,7 @@ describe('Controller: LogoutCtrl', function() {
 
 	beforeEach(inject(function($controller, $rootScope) {	
 		$scope = $rootScope.$new();
-		ctrl = $controller('LogoutCtrl', {$scope: $scope});
+		ctrl = $controller('LogoutController', {$scope: $scope});
 	}));
 
   	it('should have items available on load', function() {

@@ -1,6 +1,6 @@
-describe('Controller: HomeCtrl', function() {
+describe('Controller: HomeController', function() {
   	// Instantiate a new version of my module before each test
-  	beforeEach(module('myApp.home'));
+  	beforeEach(module('wxApp.modules.home'));
 
   	var ctrl, scope, service;
 
@@ -14,9 +14,9 @@ describe('Controller: HomeCtrl', function() {
 		spyOn(FirebaseServiceFeed, 'getOnce').and.callFake(function() {
      			return {'success':'1'};
     		});
-		service = FirebaseServiceFeed;	
+		service = FirebaseFeedService;	
 
-		ctrl = $controller('HomeCtrl', {$scope: $scope, FirebaseServiceFeed:service});
+		ctrl = $controller('HomeController', {$scope: $scope, FirebaseFeedService:service});
 
 		// controller
 		spyOn(ctrl, 'testCookie').and.callFake(function(){
