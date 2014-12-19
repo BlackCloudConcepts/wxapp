@@ -7,12 +7,12 @@ describe('Controller: HomeController', function() {
   	// Before each unit test, instantiate a new instance
   	// of the controller
 
-	beforeEach(inject(function($controller, FirebaseServiceFeed, $rootScope) {	
+	beforeEach(inject(function($controller, FirebaseFeedService, $rootScope) {	
 		$scope = $rootScope.$new();
 
 		// service
-		spyOn(FirebaseServiceFeed, 'getOnce').and.callFake(function() {
-     			return {'success':'1'};
+		spyOn(FirebaseFeedService, 'feed').and.callFake(function() {
+     			return "success";
     		});
 		service = FirebaseFeedService;	
 
@@ -27,23 +27,19 @@ describe('Controller: HomeController', function() {
 
 	it('should have a Controller', function(){
 		expect(ctrl).not.toEqual(undefined);
+		expect(ctrl.testCookie).not.toEqual(undefined);
+		expect(ctrl.switchRegion).not.toEqual(undefined)
 	});
 
-	it('should have these in existance', function(){
+	it('should have a service', function(){
 		expect(service).not.toEqual(undefined);
 		expect(service.feed).not.toEqual(undefined);
-		expect(service.getOnce).not.toEqual(undefined);
 	});
 
 	it('should have called service feed', function(){
-		spyOn(service, 'feed');	
+	//	spyOn(service, 'feed');	
 		service.feed(undefined, ctrl);
 		expect(service.feed).toHaveBeenCalled();
-	});
-
-	it('should have called service getOnce', function(){
-		service.getOnce();
-		expect(service.getOnce).toHaveBeenCalled();
 	});
 
 });

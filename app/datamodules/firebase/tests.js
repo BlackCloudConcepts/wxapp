@@ -7,9 +7,10 @@ describe('Service: FirebaseDataService', function() {
         // Before each unit test, instantiate a new instance
         // of the controller
 
-        beforeEach(inject(function($controller, $rootScope) {
+        beforeEach(inject(function($rootScope, FirebaseDataService) {
                 $scope = $rootScope.$new();
-                ctrl = $controller('FirebaseDataService', {$scope: $scope});
+		service = FirebaseDataService;
+//                ctrl = $controller('FirebaseDataService', {$scope: $scope});
         }));
 
         it('should have items available on load', function() {

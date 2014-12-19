@@ -12,7 +12,7 @@ angular.module('wxApp.modules.login', ['ngRoute','firebase'])
 
 // Define controller, services, factories, providers, filters 
 .controller('LoginController', LoginController)
-.service('FirebaseService', [FirebaseService]);
+.service('FirebaseService', FirebaseService);
 
 // Dependency injections to controller, services, factories, providers, filters
 LoginController.$inject =  ['FirebaseService', '$scope'];

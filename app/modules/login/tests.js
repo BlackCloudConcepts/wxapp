@@ -9,27 +9,20 @@ describe('Controller: LoginController', function() {
 
 	beforeEach(inject(function($controller, FirebaseService, $rootScope) {	
 		$scope = $rootScope.$new();
-//		$scope = {};
-		serivce = FirebaseService;	
-		ctrl = $controller('LoginController', {$scope: $scope, FirebaseService:service});
+		service = FirebaseService;	
+		ctrl = $controller('LoginController', {FirebaseService:service, $scope: $scope});
 	}));
 
-  	it('should have items available on load', function() {
-    		expect(ctrl.messages).toEqual('middle');
+  	it('should have a controller with appropriate functions', function() {
+    		expect(ctrl).not.toEqual(undefined);
+		expect(ctrl.SignIn).not.toEqual(undefined);
   	});
 
-/*
-	it('should be able to sign in', function(){
-		ctrl.user = {};
-		ctrl.user.email = "whatever@gmail.com";
-		ctrl.user.password = 'letmein';
-		ctrl.SignIn();
-		setTimeout(function(){
-console.log(ctrl.success);
-			expect(ctrl.success).toEqual(true);
-		},3000);
+	it('should have a service with appropriate functions', function(){
+		expect(service).not.toEqual(undefined);
+		expect(service.login).not.toEqual(undefined);
 	});
-*/
+
 });
 
 

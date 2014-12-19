@@ -7,9 +7,10 @@ describe('Service: MapsService', function() {
         // Before each unit test, instantiate a new instance
         // of the controller
 
-        beforeEach(inject(function($controller, $rootScope) {
+        beforeEach(inject(function($rootScope, MapsService) {
                 $scope = $rootScope.$new();
-                ctrl = $controller('MapsService', {$scope: $scope});
+		service = MapsService;
+//                ctrl = $controller('MapsService', {$scope: $scope});
         }));
 
         it('should have items available on load', function() {
