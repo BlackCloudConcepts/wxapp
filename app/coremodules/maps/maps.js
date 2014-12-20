@@ -36,12 +36,16 @@ function MapsService(ConversionsService){
 				var temp = ConversionsService.getTemperatureKelvinToFahrenheit(arrCities[i].main.temp);
 				var pressure = arrCities[i].main.pressure;
 				var humidity = arrCities[i].main.humidity;
+				var windspeed = arrCities[i].wind.speed;
+				var winddirection = ConversionsService.getWindDirectionDegToText(arrCities[i].wind.deg);
 				var contentString = '<div id="content" style="width:200px">'+
 					'<div id="bodyContent">'+
 					'<div>'+name+'</div>'+
 					'<div style="font-size:8pt;">Temperature: '+temp+' &deg;F</div>'+
 					'<div style="font-size:8pt;">Pressure: '+pressure+' mb</div>'+
 					'<div style="font-size:8pt;">Humidity: '+humidity+' %</div>'+
+					'<div style="font-size:8pt;">Wind Speed: '+windspeed+' km/h</div>'+
+					'<div style="font-size:8pt;">Wind Direction: '+winddirection+'</div>'+
 					'</div>'+
 					'</div>';
 

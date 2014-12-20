@@ -14,12 +14,14 @@ angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.c
 // Define controller, services, factories, providers, filters
 .controller('HomeController', HomeController)
 .service('FirebaseFeedService', FirebaseFeedService)
-.filter('TemperatureFilter', TemperatureFilter);
+.filter('TemperatureFilter', TemperatureFilter)
+.filter('WindDirectionFilter', WindDirectionFilter);
 
 // Dependency injections to controller, services, factories, providers, filters
 HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'CookiesService', 'MapsService'];
 FirebaseFeedService.$inject = ['FirebaseDataService', 'MapsService'];
 TemperatureFilter.$inject = ['ConversionsService'];
+WindDirectionFilter.$inject = ['ConversionsService'];
 
 // -- Function defining HomeController
 // input : FirebaseFeedService
@@ -85,11 +87,20 @@ function FirebaseFeedService(FirebaseDataService, MapsService){
 }
 
 // -- Function defining TemperatureFilter
-// input : None
+// input : ref to ConversionService
 // output : 
 function TemperatureFilter(ConversionsService){
 	return function(kelvin){
 		return ConversionsService.getTemperatureKelvinToFahrenheit(kelvin);
+	};
+}
+
+// -- Function defining WindDirectionFilter
+// input : ref to ConversionService
+// output :
+function WindDirectionFilter(ConversionService){
+	return function(deg){
+		return ConversionService.getWindDirectionDegToText(deg);
 	};
 }
 
