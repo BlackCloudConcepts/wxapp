@@ -30,6 +30,7 @@ module.exports = function(config) {
 	"../app/coremodules/conversions/conversions.js",
 	"../app/coremodules/maps/maps.js",
 	"../app/datamodules/firebase/firebase.js",
+	"../app/directivemodules/search/search.js",
 	"https://cdn.firebase.com/js/client/1.1.1/firebase.js",
 	"https://cdn.firebase.com/libs/angularfire/0.8.0/angularfire.min.js",
 	"https://maps.googleapis.com/maps/api/js?key=AIzaSyD5Hsb6nr_wjoRkpEmOYiXCYuecjmUwT6A",
@@ -39,7 +40,8 @@ module.exports = function(config) {
 	"../app/coremodules/cookies/tests.js",
         "../app/coremodules/conversions/tests.js",
         "../app/coremodules/maps/tests.js",
-        "../app/datamodules/firebase/tests.js"
+        "../app/datamodules/firebase/tests.js",
+	"../app/directivemodules/search/tests.js"
     ],
 
 
