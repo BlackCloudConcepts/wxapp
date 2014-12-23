@@ -37,3 +37,15 @@
 	height: 500px;
 	width: 1020px;
 }
+
+.float_left {
+	float: left;
+}
+
+.float_right {
+	float: right;
+}
+
+.clear {
+	clear: both;
+}

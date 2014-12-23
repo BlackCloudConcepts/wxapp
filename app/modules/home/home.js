@@ -1,7 +1,7 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase', 'wxApp.coremodules.maps'])
+angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase', 'wxApp.coremodules.maps', 'wxApp.directivemodules.search'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {
