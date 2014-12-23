@@ -29,6 +29,9 @@ WindDirectionFilter.$inject = ['ConversionsService'];
 function HomeController($scope, FirebaseFeedService, CookiesService, MapsService) {
 	var self = this;
 	this.currentRegion = 'TX';
+	this.headers = ['Name','Temperature','Pressure','Humidity','Wind Speed','Wind Direction'];
+	this.sortOrderItems = ['+name', '+main.temp', '+main.pressure', '+main.humidity', '+wind.speed', '+wind.deg'];
+	this.sortOrder = this.sortOrderItems[0];
 
 	this.testCookie = function(){
 		if (CookiesService.getCookie('username') != ''){
@@ -48,6 +51,22 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 		evt.stopPropagation();
 		self.currentRegion = region;
 		MapsService.drawMap(self.cities, self.currentRegion, 'map-canvas');
+	};
+
+	this.doSort = function(index){
+		if (self.sortOrder == self.sortOrderItems[index]){
+			if (self.sortOrder.indexOf('+') != -1){
+				// switch current column to sort desc
+				self.sortOrder = self.sortOrder.replace('+','-');
+			} else {
+				// switch current column to sort asc
+				self.sortOrder = self.sortOrder.replace('-','+');
+			}
+		} else {
+			// order by new column asc
+			self.sortOrder = self.sortOrderItems[index];
+		}
+		document.getElementById('cityTable').scrollTop = 0;
 	};
 }
 

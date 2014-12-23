@@ -8,17 +8,12 @@
 			<h3>Current Weather Conditions for: {{ctrl.currentRegion}}</h3>
 			<table class="table table-striped">
 				<tr style="background-color:#CFE8F7">
-					<th style="width:200px;">&nbsp;</th>
-					<th style="width:200px;font-weight:bold;">Temperature</th>
-					<th style="width:200px;font-weight:bold;">Pressure</th>
-					<th style="width:200px;font-weight:bold;">Humidity</th>
-					<th style="width:200px;font-weight:bold;">Wind Speed</th>
-					<th style="width:200px;font-weight:bold;">Wind Direction</th>
+					<th ng-repeat="header in ctrl.headers" ng-click="ctrl.doSort($index)" style="cursor:pointer;width:200px;font-weight:bold;">{{header}}</th>
 				</tr>
 			</table>
-			<div style="height:200px;overflow-y:auto;">
+			<div id="cityTable" style="height:200px;overflow-y:auto;">
 				<table class="table table-striped">
-					<tr ng-repeat="city in ctrl.cities | filter:{region:ctrl.currentRegion}">
+					<tr ng-repeat="city in ctrl.cities | orderBy:ctrl.sortOrder | filter:{region:ctrl.currentRegion}">
 						<td style="width:200px;font-weight:bold;">{{city.name}}</td>
 						<td style="width:200px;">{{city.main.temp | TemperatureFilter}} &deg;F</td>
 						<td style="width:200px;">{{city.main.pressure}} mb</td>
