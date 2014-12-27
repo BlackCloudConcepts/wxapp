@@ -3,10 +3,15 @@
 <head>
   	<meta charset="utf-8">
   	<title>WX APP</title>
-  	<link rel="stylesheet" href="css/app.css"/>
 	<link rel="icon" href="favicon.ico">
 	<link href="lib/bootstrap/bootstrap.min.css" rel="stylesheet">
-	<link href="css/signin.css"  rel="stylesheet">
+
+	<!-- build files -->
+	<link href="build/wxapp.min.css" rel="stylesheet">
+<!--
+  	<link href="css/app.css" rel="stylesheet"/>
+	<link href="css/signin.css" rel="stylesheet">
+-->
 </head>
 <body>
   	<ul class="menu">
@@ -20,34 +25,33 @@
   	</ul>
   	<div ng-view></div>
 
-	<!-- angular libraries --> 
+	<!-- build files -->
+	<script src="build/wxapp.min.js"></script>
+	
+<!--
 	<script src="lib/angular/angular.js"></script>
 	<script src="lib/angular/angular-route.js"></script>
 
-	<!-- core files -->
 	<script src="js/app.js"></script>
 	<script src="js/services.js"></script>
 	<script src="js/controllers.js"></script>
 	<script src="js/filters.js"></script>
 	<script src="js/directives.js"></script>
-
-	<!-- custom modules -->
+	
 	<script src="modules/login/login.js"></script>
 	<script src="modules/home/home.js"></script>
 	<script src="modules/logout/logout.js"></script>
 
-	<!-- custom core modules -->
 	<script src="coremodules/cookies/cookies.js"></script>
 	<script src="coremodules/conversions/conversions.js"></script>
 	<script src="coremodules/maps/maps.js"></script>
 
-	<!-- custom data modules -->
 	<script src="datamodules/firebase/firebase.js"></script>
 
-	<!-- custom directive modules -->
 	<script src="directivemodules/search/search.js"></script>
+	
+--> 
 
-	<!-- 3rd party libraries -->
 	<script src="lib/firebase/firebase.js" type="text/javascript"></script>
 	<script src="lib/firebase/angularfire.min.js" type="text/javascript"></script>
 	<script src="lib/bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
