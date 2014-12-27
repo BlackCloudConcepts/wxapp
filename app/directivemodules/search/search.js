@@ -13,12 +13,17 @@ function SearchDirective(){
 		scope: {
 			searchText: '=',
 			placeholder: '@',
-			buttonText: '@'
+			buttonText: '@',
+			clearText: '@'
 		},
 		link: function(scope, element, attrs){
 			scope.searchClicked = function(){
 //				scope.searchText = scope.tempSearchText;
 				scope.$parent.ctrl.searchText = scope.tempSearchText;
+			};
+			scope.clearClicked = function(){
+				scope.$parent.ctrl.searchText = "";
+				scope.tempSearchText = "";
 			};
 		}
 	};

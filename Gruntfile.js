@@ -96,7 +96,7 @@ module.exports = function (grunt) {
 				'app/directivemodules/search/search.js'				
 			],
 			tasks: [
-				'jshint:custom_js',
+//				'jshint:custom_js',
 				'uglify:my_target'
 			],
 			options: {

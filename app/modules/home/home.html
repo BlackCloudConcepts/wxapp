@@ -6,7 +6,7 @@
     				<tab heading="OK" ng-click="ctrl.switchRegion($event,'OK')">Current weather conditions for central Oklahoma centering around the Oklahoma City area.</tab>
   			</tabset>
 			<h3>Current Weather Conditions for: {{ctrl.currentRegion}}</h3>
-			<bc-search placeholder="city" search-text="searchText" button-text="Search"></bc-search>
+			<bc-search placeholder="city" search-text="searchText" button-text="Search" clear-text="Clear"></bc-search>
 			<table class="table table-striped">
 				<tr style="background-color:#CFE8F7">
 					<th ng-repeat="header in ctrl.headers" ng-click="ctrl.doSort($index)" style="cursor:pointer;width:200px;font-weight:bold;">{{header}}</th>
