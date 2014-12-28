@@ -91,7 +91,7 @@ function FirebaseFeedService(FirebaseDataService, MapsService){
 		FirebaseDataService.getFullDataset(callbackFullDataset);
 
 		var callbackUpdates = function(message){
-			for (var i = 0;i < arrCities.length;i++){
+			for (let i = 0;i < arrCities.length;i++){
                                 if (message.name == arrCities[i].name){
                                         $scope.$apply(function(){
                                                 arrCities[i] = message;
