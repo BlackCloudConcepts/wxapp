@@ -7,6 +7,7 @@ angular.module('wxApp', [
 	'wxApp.modules.login',
 	'wxApp.modules.home',
 	'wxApp.modules.logout',
+	'wxApp.modules.es6',
   	'wxApp.filters',
   	'wxApp.services',
   	'wxApp.directives',
