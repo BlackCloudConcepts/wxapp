@@ -1,19 +1,19 @@
 <div ng-controller="HomeController as ctrl"> 
     	<div class="container">
-        	<div class="jumbotron" style="padding-bottom:0px;">
+        	<div class="jumbotron" style="padding-bottom:0px;width:1200px;">
 			<tabset vertical="false" type="pills">
     				<tab heading="TX" ng-click="ctrl.switchRegion($event,'TX')">Current weather conditions for central Texas centering around the Austin area.</tab>
     				<tab heading="OK" ng-click="ctrl.switchRegion($event,'OK')">Current weather conditions for central Oklahoma centering around the Oklahoma City area.</tab>
   			</tabset>
 			<h3>Current Weather Conditions for: {{ctrl.currentRegion}}</h3>
 			<bc-search placeholder="city" search-text="searchText" button-text="Search" clear-text="Clear"></bc-search>
-			<table class="table table-striped">
+			<table class="table table-striped" style="width:1020px;">
 				<tr style="background-color:#CFE8F7">
 					<th ng-repeat="header in ctrl.headers" ng-click="ctrl.doSort($index)" style="cursor:pointer;width:200px;font-weight:bold;">{{header}}</th>
 				</tr>
 			</table>
 			<div id="cityTable" style="height:200px;overflow-y:auto;">
-				<table class="table table-striped">
+				<table class="table table-striped" style="width:1020px;">
 					<tr ng-repeat="city in ctrl.cities | orderBy:ctrl.sortOrder | filter:{region:ctrl.currentRegion} | filter:{name:ctrl.searchText}">
 						<td style="width:200px;font-weight:bold;">{{city.name}}</td>
 						<td style="width:200px;">{{city.main.temp | TemperatureFilter}} &deg;F</td>
@@ -29,5 +29,7 @@
         	</div>
     	</div>
 </div> 
-   
+<div ng-controller="FooterController as ctrlFooter">
+	<div style="text-align:center" ng-bind-html="ctrlFooter.copyright"></div>
+</div> 
  

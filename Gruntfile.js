@@ -20,6 +20,7 @@ module.exports = function (grunt) {
 			'app/modules/home/home.js',
 			'app/modules/logout/logout.js',
 			'app/modules/es6/es6.js',
+			'app/modules/footer/footer.js',
 			'app/coremodules/cookies/cookies.js',
 			'app/coremodules/conversions/conversions.js',
 			'app/coremodules/maps/maps.js',
@@ -32,7 +33,7 @@ module.exports = function (grunt) {
 	uglify: {
     		options: {
       			compress: {
-        			drop_console: true
+//        			drop_console: true
       			}
     		},
     		my_target: {
@@ -40,6 +41,7 @@ module.exports = function (grunt) {
         			'app/build/wxapp.min.js': [
 					'app/lib/angular/angular.js',
 					'app/lib/angular/angular-route.js',
+					'app/lib/angular/angular-sanitize.js',
 					'app/js/app.js',
 					'app/js/services.js',
 					'app/js/controllers.js',
@@ -49,6 +51,7 @@ module.exports = function (grunt) {
 					'app/prebuild/modules/home/home.js',
 					'app/prebuild/modules/logout/logout.js',
 					'app/prebuild/modules/es6/es6.js',
+					'app/prebuild/modules/footer/footer.js',
 					'app/prebuild/coremodules/cookies/cookies.js',
 					'app/prebuild/coremodules/conversions/conversions.js',
 					'app/prebuild/coremodules/maps/maps.js',
@@ -84,6 +87,7 @@ module.exports = function (grunt) {
 				'app/prebuild/modules/home/home.js': 'app/modules/home/home.js',
 				'app/prebuild/modules/logout/logout.js': 'app/modules/logout/logout.js',
 				'app/prebuild/modules/es6/es6.js': 'app/modules/es6/es6.js',
+				'app/prebuild/modules/footer/footer.js': 'app/modules/footer/footer.js',
 				'app/prebuild/coremodules/cookies/cookies.js': 'app/coremodules/cookies/cookies.js',
 				'app/prebuild/coremodules/conversions/conversions.js': 'app/coremodules/conversions/conversions.js',
 				'app/prebuild/coremodules/maps/maps.js': 'app/coremodules/maps/maps.js',
@@ -110,6 +114,7 @@ module.exports = function (grunt) {
 				'app/modules/home/home.js',
 				'app/modules/logout/logout.js',
 				'app/modules/es6/es6.js',
+				'app/modules/footer/footer.js',
 				'app/coremodules/cookies/cookies.js',
 				'app/coremodules/conversions/conversions.js',
 				'app/coremodules/maps/maps.js',
