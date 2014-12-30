@@ -33,11 +33,6 @@
 	border-color:#51F754;
 }
 
-#map-canvas {
-	height: 500px;
-	width: 1020px;
-}
-
 .float_left {
 	float: left;
 }

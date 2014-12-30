@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AACC,uCAAqB;EACpB,cAAc,EAAI,GAAG",
+"sources": ["../../../modules/logout/logout.scss"],
+"names": [],
+"file": "logout.css"
+}

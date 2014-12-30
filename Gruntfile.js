@@ -86,7 +86,10 @@ module.exports = function (grunt) {
 	sass: {
    	 	dist: {
       			files: {
-        			'app/prebuild/modules/home/home.css': 'app/modules/home/home.scss'
+        			'app/prebuild/modules/home/home.css': 'app/modules/home/home.scss',
+        			'app/prebuild/modules/login/login.css': 'app/modules/login/login.scss',
+        			'app/prebuild/modules/logout/logout.css': 'app/modules/logout/logout.scss',
+        			'app/prebuild/directivemodules/search/search.css': 'app/directivemodules/search/search.scss'
       			}
     		}
   	},
@@ -96,7 +99,10 @@ module.exports = function (grunt) {
                     'app/build/wxapp.min.css': [
 			'app/css/app.css',
 			'app/css/signin.css',
-			'app/prebuild/modules/home/home.css'
+			'app/prebuild/modules/home/home.css',
+			'app/prebuild/modules/login/login.css',
+			'app/prebuild/modules/logout/logout.css',
+			'app/prebuild/directivemodules/search/search.css'
                     ]
                 },
                 options: {
