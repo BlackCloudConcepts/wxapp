@@ -19,3 +19,8 @@ To Use:
 - Run "npm install"
 - Make sure Ruby is installed "ruby -v"
 - Run "gem install sass"
+
+Or Use Bundler http://bundler.io/
+- Run "gem install bundler"
+- Run "bundle install" (this uses the Gemfile in project root)
+
