@@ -3,6 +3,7 @@ Weather Nowcasting Application.
 - AngularJS 
 - NodeJS (wxfeed)
 - Firebase
+- SASS
 
 Coded using features from ECMAScript6 and made browser compatible by converting back to ES5 using 6to5.
 - https://6to5.org
@@ -13,3 +14,8 @@ Unit Testing
 
 End-to-End Testing
 - Protractor
+
+To Use:
+- Run "npm install"
+- Make sure Ruby is installed "ruby -v"
+- Run "gem install sass"
