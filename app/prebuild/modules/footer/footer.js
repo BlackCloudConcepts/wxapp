@@ -15,6 +15,6 @@
   function FooterController($scope, $sce) {
     var self = this;
     //	this.copyright = $sce.trustAsHtml("&copy; BlackCloudConcepts 2015");
-    this.copyright = "&copy; BlackCloudConcepts 2015";
+    this.copyright = "Nowcasting Weather Application";
   }
 })(); // END IIFE
