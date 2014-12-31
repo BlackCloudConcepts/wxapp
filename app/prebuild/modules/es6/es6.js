@@ -1,4 +1,18 @@
 "use strict";
+
+var _inherits = function (child, parent) {
+  child.prototype = Object.create(parent && parent.prototype, {
+    constructor: {
+      value: child,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (parent) child.__proto__ = parent;
+};
+
+"use strict";
 (function () {
   // START IIFE
 
@@ -30,14 +44,8 @@
             context$3$0.next = 4;
             return 2;
           case 4:
-            context$3$0.next = 6;
-            return 3;
-          case 6:
-            context$3$0.next = 8;
-            return 4;
-          case 8:
             return context$3$0.abrupt("return", 5);
-          case 9:
+          case 5:
           case "end":
             return context$3$0.stop();
         }
@@ -46,16 +54,16 @@
 
     var self = this;
 
-    self.output = [];
-
     // let
-    self.output.push("-- let / block scoping --");
-    for (var i = 0; i < 10; i++) {
-      self.output.push(i);
+    self.outputLet = [];
+    self.outputLet.push("-- let / block scoping --");
+    for (var i = 0; i < 4; i++) {
+      self.outputLet.push(i);
     }
 
     // generators / yield
-    self.output.push("-- generator / yield --");
+    self.outputGenerator = [];
+    self.outputGenerator.push("-- generator / yield --");
     runGenerator();
     function runGenerator() {
       var iterator = onetofive();
@@ -63,23 +71,70 @@
       // Assuming obj.done is a boolean
       while (!obj.done) {
         obj = iterator.next();
-        self.output.push(obj);
+        self.outputGenerator.push(obj);
       }
     }
+
+
+    // arrow functions (eliminate the need for redefining this)
+    self.outputArrow = [];
+    self.outputArrow.push("-- arrow function / this --");
+    var rA = new runArrow();
+    function runArrow() {
+      var _this = this;
+      this.count = 109;
+      self.outputArrow.push(this.count);
+      setTimeout(function () {
+        $scope.$apply(function () {
+          _this.count++;
+          self.outputArrow.push(_this.count);
+        });
+      }, 3000);
+    }
+
+    // classes
+    self.outputClass = [];
+    self.outputClass.push("-- classes --");
+    var baseClass = function baseClass() {
+      this.teams = {
+        t1: "Chicago Cubs",
+        t2: "New York Yankees"
+      };
+    };
+
+    baseClass.prototype.getName = function (id) {
+      return this.teams[id];
+    };
+
+    var baseballClass = function baseballClass() {
+      baseClass.call(this); // calls the constructor of the base class
+    };
+
+    _inherits(baseballClass, baseClass);
+
+    baseballClass.prototype.printBaseballTeam = function (id) {
+      self.outputClass.push(this.getName(id));
+    };
+
+    var bObj = new baseballClass();
+    bObj.printBaseballTeam("t1");
+
+    // http://www.sitepoint.com/preparing-ecmascript-6-set-weakset/
+    // set
+    self.outputSet = [];
+    self.outputSet.push("-- set --");
+
+    // weakset
+    self.outputWeakset = [];
+    self.outputWeakset.push("-- weakset --");
+
+    // http://www.sitepoint.com/preparing-ecmascript-6-map-weakmap/
+    // map
+    self.outputMap = [];
+    self.outputMap.push("-- map --");
+
+    // weakmap
+    self.outputWeakmap = [];
+    self.outputWeakmap.push("-- weakmap --");
   }
 })(); // END IIFE
-
-
-// arrow functions (eliminate the need for redefining this)
-/*
-	self.output.push('-- arrow function / this --');
-	runArrow();
-	function runArrow(){
-console.log(this);
-		this.count = 9;
-		self.output.push(this.count);
-		setTimeout(() => {
-			this.count++;
-		},3000);
-	}
-*/

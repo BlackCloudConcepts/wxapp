@@ -2572,21 +2572,22 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
     }]).controller('Es6Controller', Es6Controller);
     Es6Controller.$inject = ['$scope'];
     function Es6Controller($scope) {
-      var $__0 = $traceurRuntime.initGeneratorFunction(onetofive);
+      var $__2 = $traceurRuntime.initGeneratorFunction(onetofive);
       var self = this;
-      self.output = [];
-      self.output.push('-- let / block scoping --');
-      for (var i = 0; i < 10; i++) {
-        self.output.push(i);
+      self.outputLet = [];
+      self.outputLet.push('-- let / block scoping --');
+      for (var i = 0; i < 4; i++) {
+        self.outputLet.push(i);
       }
-      self.output.push('-- generator / yield --');
+      self.outputGenerator = [];
+      self.outputGenerator.push('-- generator / yield --');
       runGenerator();
       function runGenerator() {
         var iterator = onetofive();
         var obj = {};
         while (!obj.done) {
           obj = iterator.next();
-          self.output.push(obj);
+          self.outputGenerator.push(obj);
         }
       }
       function onetofive() {
@@ -2608,28 +2609,56 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
                 $ctx.state = 8;
                 break;
               case 8:
-                $ctx.state = 10;
-                return 3;
-              case 10:
-                $ctx.maybeThrow();
-                $ctx.state = 12;
-                break;
-              case 12:
-                $ctx.state = 14;
-                return 4;
-              case 14:
-                $ctx.maybeThrow();
-                $ctx.state = 16;
-                break;
-              case 16:
                 $ctx.returnValue = 5;
                 $ctx.state = -2;
                 break;
               default:
                 return $ctx.end();
             }
-        }, $__0, this);
+        }, $__2, this);
       }
+      self.outputArrow = [];
+      self.outputArrow.push('-- arrow function / this --');
+      var rA = new runArrow();
+      function runArrow() {
+        var $__0 = this;
+        this.count = 109;
+        self.outputArrow.push(this.count);
+        setTimeout((function() {
+          $scope.$apply((function() {
+            $__0.count++;
+            self.outputArrow.push($__0.count);
+          }));
+        }), 3000);
+      }
+      self.outputClass = [];
+      self.outputClass.push('-- classes --');
+      var baseClass = function baseClass() {
+        this.teams = {
+          't1': "Chicago Cubs",
+          't2': "New York Yankees"
+        };
+      };
+      ($traceurRuntime.createClass)(baseClass, {getName: function(id) {
+          return this.teams[id];
+        }}, {});
+      var baseballClass = function baseballClass() {
+        $traceurRuntime.superConstructor($baseballClass).call(this);
+      };
+      var $baseballClass = baseballClass;
+      ($traceurRuntime.createClass)(baseballClass, {printBaseballTeam: function(id) {
+          self.outputClass.push(this.getName(id));
+        }}, {}, baseClass);
+      var bObj = new baseballClass();
+      bObj.printBaseballTeam('t1');
+      self.outputSet = [];
+      self.outputSet.push('-- set --');
+      self.outputWeakset = [];
+      self.outputWeakset.push('-- weakset --');
+      self.outputMap = [];
+      self.outputMap.push('-- map --');
+      self.outputWeakmap = [];
+      self.outputWeakmap.push('-- weakmap --');
     }
   })();
   return {};

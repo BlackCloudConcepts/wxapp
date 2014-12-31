@@ -1,7 +1,34 @@
 <div ng-controller="Es6Controller as ctrl"> 
     	<div class="container">
         	<div class="jumbotron" style="padding-bottom:0px;">
-            		<div ng-repeat="output in ctrl.output">{{output}}</div>
+			<div class="row">
+				<div class="col-xs-3">
+					<div ng-repeat="output in ctrl.outputLet">{{output}}</div>
+				</div>
+				<div class="col-xs-3">
+					<div ng-repeat="output in ctrl.outputGenerator">{{output}}</div>
+				</div>
+				<div class="col-xs-3">
+					<div ng-repeat="output in ctrl.outputArrow">{{output}}</div>
+				</div>
+				<div class="col-xs-3">
+					<div ng-repeat="output in ctrl.outputClass">{{output}}</div>
+				</div>
+			</div>
+			<div class="row">
+                                <div class="col-xs-3">
+                                        <div ng-repeat="output in ctrl.outputSet">{{output}}</div>
+                                </div>
+                                <div class="col-xs-3">
+                                        <div ng-repeat="output in ctrl.outputWeakset">{{output}}</div>
+                                </div>
+                                <div class="col-xs-3">
+                                        <div ng-repeat="output in ctrl.outputMap">{{output}}</div>
+                                </div>
+                                <div class="col-xs-3">
+                                        <div ng-repeat="output in ctrl.outputWeakmap">{{output}}</div>
+                                </div>
+                        </div>
             	</div>
 	</div>
 </div> 

@@ -21,16 +21,16 @@ Es6Controller.$inject =  ['$scope'];
 function Es6Controller($scope) {
 	var self = this;
 
-	self.output = [];
-
 	// let
-	self.output.push('-- let / block scoping --');
-	for (let i = 0;i < 10;i++){
-		self.output.push(i);
+	self.outputLet = [];
+	self.outputLet.push('-- let / block scoping --');
+	for (let i = 0;i < 4;i++){
+		self.outputLet.push(i);
 	}
 
 	// generators / yield
-	self.output.push('-- generator / yield --');
+	self.outputGenerator = [];
+	self.outputGenerator.push('-- generator / yield --');
 	runGenerator();
 	function runGenerator() {
 	  	var iterator = onetofive();
@@ -38,30 +38,72 @@ function Es6Controller($scope) {
 	  	// Assuming obj.done is a boolean
 	  	while (!obj.done) {
 	    		obj = iterator.next();
-			self.output.push(obj);
+			self.outputGenerator.push(obj);
 	  	}
 	}
 	function* onetofive() {
 	  	yield 1;
 	  	yield 2;
-	  	yield 3;
-	  	yield 4;
 	  	return 5;
 	}
 
 	// arrow functions (eliminate the need for redefining this)
-/*
-	self.output.push('-- arrow function / this --');
-	runArrow();
+	self.outputArrow = [];
+	self.outputArrow.push('-- arrow function / this --');
+	let rA = new runArrow();
 	function runArrow(){
-console.log(this);
-		this.count = 9;
-		self.output.push(this.count);
+		this.count = 109;
+		self.outputArrow.push(this.count);
 		setTimeout(() => {
-			this.count++;
+			$scope.$apply(() => {
+				this.count++;
+				self.outputArrow.push(this.count);
+			});
 		},3000);
 	}
-*/
+
+	// classes
+	self.outputClass = [];
+	self.outputClass.push('-- classes --');
+	class baseClass {
+		constructor(){
+			this.teams = {
+				't1' : "Chicago Cubs",
+				't2' : "New York Yankees"
+			};
+		}
+		getName(id){
+			return this.teams[id];
+		}
+	}
+	class baseballClass extends baseClass {
+		constructor(){
+			super(); // calls the constructor of the base class
+		}
+		printBaseballTeam(id){
+			self.outputClass.push(this.getName(id));
+		}
+	}
+	let bObj = new baseballClass();
+	bObj.printBaseballTeam('t1');
+
+	// http://www.sitepoint.com/preparing-ecmascript-6-set-weakset/
+	// set 
+	self.outputSet = [];
+	self.outputSet.push('-- set --');
+
+	// weakset
+	self.outputWeakset = [];
+	self.outputWeakset.push('-- weakset --');
+
+	// http://www.sitepoint.com/preparing-ecmascript-6-map-weakmap/
+	// map
+	self.outputMap = [];
+	self.outputMap.push('-- map --');
+
+	// weakmap
+	self.outputWeakmap = [];
+	self.outputWeakmap.push('-- weakmap --');
 }
 
 })(); // END IIFE
