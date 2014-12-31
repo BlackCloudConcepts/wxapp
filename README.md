@@ -5,9 +5,13 @@ Weather Nowcasting Application.
 - Firebase
 - SASS
 
-Coded using features from ECMAScript6 and made browser compatible by converting back to ES5 using 6to5.
+Coded using features from ECMAScript6 and made browser compatible by converting back to ES5 using 6to5 or Traceur.
+- 6to5
 - https://6to5.org
 - https://github.com/6to5/grunt-6to5 
+- Traceur
+- https://github.com/aaronfrost/grunt-traceur
+- https://www.npmjs.com/package/grunt-traceur
 
 Unit Testing
 - Karma

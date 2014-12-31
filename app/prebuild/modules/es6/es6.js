@@ -48,17 +48,16 @@
 
     self.output = [];
 
-
     // let
+    self.output.push("-- let / block scoping --");
     for (var i = 0; i < 10; i++) {
       self.output.push(i);
     }
 
-
     // generators / yield
-    run();
-
-    function run() {
+    self.output.push("-- generator / yield --");
+    runGenerator();
+    function runGenerator() {
       var iterator = onetofive();
       var obj = {};
       // Assuming obj.done is a boolean
@@ -69,3 +68,18 @@
     }
   }
 })(); // END IIFE
+
+
+// arrow functions (eliminate the need for redefining this)
+/*
+	self.output.push('-- arrow function / this --');
+	runArrow();
+	function runArrow(){
+console.log(this);
+		this.count = 9;
+		self.output.push(this.count);
+		setTimeout(() => {
+			this.count++;
+		},3000);
+	}
+*/

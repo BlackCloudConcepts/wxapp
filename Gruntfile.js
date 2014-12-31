@@ -53,6 +53,39 @@ module.exports = function (grunt) {
 			}
         	}
     	},
+	traceur: {
+    		options: {
+      			experimental: true,
+			blockBinding: true,
+			includeRuntime: true,
+			moduleNames: false,
+      			moduleNaming: {
+		        	stripPrefix: "",
+        			addPrefix: ""
+      			}
+    		},
+    		custom: {
+      			files: [{
+        			expand: true,
+        			cwd: 'app/',
+        			src: [
+					'modules/login/login.js',
+					'modules/home/home.js',
+					'modules/logout/logout.js',
+					'modules/es6/es6.js',
+					'modules/footer/footer.js',
+					'coremodules/cookies/cookies.js',
+					'coremodules/conversions/conversions.js',
+					'coremodules/maps/maps.js',
+					'datamodules/firebase/firebase.js',
+					'directivemodules/search/search.js',
+					'directivemodules/footer/footer.js',
+					'directivemodules/alert/alert.js'
+				],
+        			dest: 'app/prebuild-traceur/'
+      			}]
+    		}
+  	},
 	uglify: {
     		options: {
       			compress: {
@@ -70,6 +103,8 @@ module.exports = function (grunt) {
 					'app/js/controllers.js',
 					'app/js/filters.js',
 					'app/js/directives.js',
+					// 6 to 5 
+					/*
 					'app/prebuild/modules/login/login.js',
 					'app/prebuild/modules/home/home.js',
 					'app/prebuild/modules/logout/logout.js',
@@ -81,7 +116,22 @@ module.exports = function (grunt) {
 					'app/prebuild/datamodules/firebase/firebase.js',
 					'app/prebuild/directivemodules/search/search.js',	
 					'app/prebuild/directivemodules/footer/footer.js',	
-					'app/prebuild/directivemodules/alert/alert.js'	
+					'app/prebuild/directivemodules/alert/alert.js'
+					*/
+					// Traceur
+					'app/prebuild-traceur/modules/login/login.js',
+					'app/prebuild-traceur/modules/home/home.js',
+					'app/prebuild-traceur/modules/logout/logout.js',
+					'app/prebuild-traceur/modules/es6/es6.js',
+					'app/prebuild-traceur/modules/footer/footer.js',
+					'app/prebuild-traceur/coremodules/cookies/cookies.js',
+					'app/prebuild-traceur/coremodules/conversions/conversions.js',
+					'app/prebuild-traceur/coremodules/maps/maps.js',
+					'app/prebuild-traceur/datamodules/firebase/firebase.js',
+					'app/prebuild-traceur/directivemodules/search/search.js',	
+					'app/prebuild-traceur/directivemodules/footer/footer.js',	
+					'app/prebuild-traceur/directivemodules/alert/alert.js'	
+	
 				]
       			}
     		}
@@ -145,6 +195,7 @@ module.exports = function (grunt) {
 			tasks: [
 //				'jshint:custom_js',
 				'6to5',
+				'traceur:custom',
 				'uglify:my_target'
 			],
 			options: {
@@ -159,12 +210,14 @@ module.exports = function (grunt) {
 	'sass',
         'cssmin:minify',
 	'6to5',
+	'traceur:custom',
 	'uglify:my_target'
     ]);
     grunt.registerTask('build-prod', [
 	'sass',
         'cssmin:minify',
 	'6to5',
+	'traceur:custom',
 	'uglify:my_target'
     ]);
 
@@ -172,6 +225,7 @@ module.exports = function (grunt) {
     	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-6to5');
+	grunt.loadNpmTasks('grunt-traceur');
     	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-sass');
 };
