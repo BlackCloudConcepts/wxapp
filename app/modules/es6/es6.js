@@ -1,7 +1,7 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('wxApp.modules.es6', ['ngRoute'])
+angular.module('wxApp.modules.es6', ['ngRoute','wxApp.directivemodules.footer'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {

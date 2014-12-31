@@ -1,7 +1,7 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase', 'wxApp.coremodules.maps', 'wxApp.directivemodules.search'])
+angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase', 'wxApp.coremodules.maps', 'wxApp.directivemodules.search', 'wxApp.directivemodules.footer', 'wxApp.directivemodules.alert'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {
@@ -28,6 +28,15 @@ WindDirectionFilter.$inject = ['ConversionsService'];
 // 	 : scope
 function HomeController($scope, FirebaseFeedService, CookiesService, MapsService) {
 	var self = this;
+	// uses alert directive to set initial message and then clears it
+	this.alertMessage = "Loading";
+	setTimeout(function(){
+		$scope.$apply(function(){
+			self.alertMessage = "";
+		});
+	}, 2000);
+
+	this.alertType = "info";
 	this.currentRegion = 'TX';
 	this.headers = ['Name','Temperature','Pressure','Humidity','Wind Speed','Wind Direction'];
 	this.sortOrderItems = ['+name', '+main.temp', '+main.pressure', '+main.humidity', '+wind.speed', '+wind.deg'];

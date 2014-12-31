@@ -25,7 +25,9 @@ module.exports = function (grunt) {
 			'app/coremodules/conversions/conversions.js',
 			'app/coremodules/maps/maps.js',
 			'app/datamodules/firebase/firebase.js',
-			'app/directivemodules/search/search.js'
+			'app/directivemodules/search/search.js',
+			'app/directivemodules/footer/footer.js',
+			'app/directivemodules/alert/alert.js'
                     ]
                 }
             }
@@ -45,7 +47,9 @@ module.exports = function (grunt) {
 				'app/prebuild/coremodules/conversions/conversions.js': 'app/coremodules/conversions/conversions.js',
 				'app/prebuild/coremodules/maps/maps.js': 'app/coremodules/maps/maps.js',
 				'app/prebuild/datamodules/firebase/firebase.js': 'app/datamodules/firebase/firebase.js',
-				'app/prebuild/directivemodules/search/search.js': 'app/directivemodules/search/search.js'
+				'app/prebuild/directivemodules/search/search.js': 'app/directivemodules/search/search.js',
+				'app/prebuild/directivemodules/footer/footer.js': 'app/directivemodules/footer/footer.js',
+				'app/prebuild/directivemodules/alert/alert.js': 'app/directivemodules/alert/alert.js'
 			}
         	}
     	},
@@ -75,10 +79,9 @@ module.exports = function (grunt) {
 					'app/prebuild/coremodules/conversions/conversions.js',
 					'app/prebuild/coremodules/maps/maps.js',
 					'app/prebuild/datamodules/firebase/firebase.js',
-					'app/prebuild/directivemodules/search/search.js'//,	
-//					'app/lib/firebase/firebase.js',
-//					'app/lib/firebase/angularfire.min.js',
-//					'app/lib/bootstrap/ui-bootstrap-tpls.min.js'
+					'app/prebuild/directivemodules/search/search.js',	
+					'app/prebuild/directivemodules/footer/footer.js',	
+					'app/prebuild/directivemodules/alert/alert.js'	
 				]
       			}
     		}
@@ -135,7 +138,9 @@ module.exports = function (grunt) {
 				'app/coremodules/conversions/conversions.js',
 				'app/coremodules/maps/maps.js',
 				'app/datamodules/firebase/firebase.js',
-				'app/directivemodules/search/search.js'				
+				'app/directivemodules/search/search.js',	
+				'app/directivemodules/footer/footer.js',	
+				'app/directivemodules/alert/alert.js'				
 			],
 			tasks: [
 //				'jshint:custom_js',
