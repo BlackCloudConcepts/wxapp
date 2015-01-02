@@ -123,6 +123,32 @@ var _inherits = function (child, parent) {
     // set
     self.outputSet = [];
     self.outputSet.push("-- set --");
+    var collection = new Set([]);
+    collection.add("Chicago Cubs");
+    collection.add("New York Yankees");
+    collection.forEach(function (arg) {
+      self.outputSet.push(arg);
+    });
+    console.log("-- Set Logging --");
+    var entries = collection.entries();
+    var entry = entries.next();
+    while (!entry.done) {
+      self.outputSet.push("Entry: " + entry.value[0]);
+      entry = entries.next();
+    }
+    var values = collection.values();
+    var value = values.next();
+    while (!value.done) {
+      self.outputSet.push("Value: " + value.value);
+      value = values.next();
+    }
+    //	collection.clear();
+    collection["delete"]("Chicago Cubs");
+    console.log(collection.has("Chicago Cubs"));
+    console.log(collection.has("New York Yankees"));
+    collection.forEach(function (args) {
+      console.log(args);
+    });
 
     // weakset
     self.outputWeakset = [];
@@ -132,9 +158,38 @@ var _inherits = function (child, parent) {
     // map
     self.outputMap = [];
     self.outputMap.push("-- map --");
+    console.log("-- Map Logging --");
+    var arrMap = [["Chicago", "Cubs"], ["New York", "Yankees"]];
+    var mapTeams = new Map(arrMap);
+    mapTeams.set("Boston", "Red Sox");
+    self.outputMap.push(mapTeams.get("Boston"));
+    self.outputMap.push(mapTeams.get("Chicago"));
+    mapTeams["delete"]("New York");
+    console.log(mapTeams.has("New York"));
+    console.log(mapTeams.has("Chicago"));
+    mapTeams.forEach(function (value, key) {
+      console.log(value);
+    });
+    var teamEntries = mapTeams.entries();
+    var teamEntry = teamEntries.next();
+    while (!teamEntry.done) {
+      console.log(teamEntry.value[1]);
+      teamEntry = teamEntries.next();
+    }
+    var teamValues = mapTeams.values();
+    var teamValue = teamValues.next();
+    while (!teamValue.done) {
+      console.log(teamValue.value);
+      teamValue = teamValues.next();
+    }
 
     // weakmap
     self.outputWeakmap = [];
     self.outputWeakmap.push("-- weakmap --");
+
+    // http://www.2ality.com/2013/07/es6-modules.html
+    // modules
+    self.outputModules = [];
+    self.outputModules.push("-- modules --");
   }
 })(); // END IIFE
