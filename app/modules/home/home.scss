@@ -1,10 +1,7 @@
 $header-background: #CFE8F7;
+$cell-background: #E5F9F5;
 
 .home_controller {
-	.table_header {
-        	background-color: $header-background !important;
-	}
-
 	.jumbotron_container {
 		padding-bottom 	: 0px;
 	}
@@ -13,12 +10,18 @@ $header-background: #CFE8F7;
 		width 		: 1020px;
 	}
 
-	.table_cell_width {
+	.table_cell {
 		width		: 200px;
+		cursor		: pointer;
+	}
+	
+	.table_cell_background {
+		background-color: $cell-background;
 	}
 
 	.table_header {
-		@extend .table_cell_width;
+		@extend .table_cell;
+        	background-color: $header-background !important;
 		cursor		: pointer;
 		font-weight	: bold;
 	}

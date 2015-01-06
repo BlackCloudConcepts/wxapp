@@ -1,12 +1,14 @@
-.home_controller .table_header {
-  background-color: #CFE8F7 !important; }
 .home_controller .jumbotron_container {
   padding-bottom: 0px; }
 .home_controller .table_container {
   width: 1020px; }
-.home_controller .table_cell_width, .home_controller .table_header {
-  width: 200px; }
+.home_controller .table_cell, .home_controller .table_header {
+  width: 200px;
+  cursor: pointer; }
+.home_controller .table_cell_background {
+  background-color: #E5F9F5; }
 .home_controller .table_header {
+  background-color: #CFE8F7 !important;
   cursor: pointer;
   font-weight: bold; }
 .home_controller .map_canvas {

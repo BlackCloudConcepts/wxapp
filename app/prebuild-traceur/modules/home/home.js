@@ -2570,11 +2570,11 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
     angular.module('wxApp.modules.home', ['ngRoute', 'firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase', 'wxApp.coremodules.maps', 'wxApp.directivemodules.search', 'wxApp.directivemodules.footer', 'wxApp.directivemodules.alert']).config(['$routeProvider', function($routeProvider) {
       $routeProvider.when('/home', {templateUrl: 'modules/home/home.html'});
     }]).controller('HomeController', HomeController).service('FirebaseFeedService', FirebaseFeedService).filter('TemperatureFilter', TemperatureFilter).filter('WindDirectionFilter', WindDirectionFilter);
-    HomeController.$inject = ['$scope', 'FirebaseFeedService', 'CookiesService', 'MapsService'];
+    HomeController.$inject = ['$scope', 'FirebaseFeedService', 'CookiesService', 'MapsService', 'ConversionsService'];
     FirebaseFeedService.$inject = ['FirebaseDataService', 'MapsService'];
     TemperatureFilter.$inject = ['ConversionsService'];
     WindDirectionFilter.$inject = ['ConversionsService'];
-    function HomeController($scope, FirebaseFeedService, CookiesService, MapsService) {
+    function HomeController($scope, FirebaseFeedService, CookiesService, MapsService, ConversionsService) {
       var self = this;
       this.alertMessage = "Loading";
       setTimeout(function() {
@@ -2587,6 +2587,8 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       this.headers = ['Name', 'Temperature', 'Pressure', 'Humidity', 'Wind Speed', 'Wind Direction'];
       this.sortOrderItems = ['+name', '+main.temp', '+main.pressure', '+main.humidity', '+wind.speed', '+wind.deg'];
       this.sortOrder = this.sortOrderItems[0];
+      this.compare1 = undefined;
+      this.compare2 = undefined;
       this.testCookie = function() {
         if (CookiesService.getCookie('username') != '') {
           return true;
@@ -2615,6 +2617,20 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
           self.sortOrder = self.sortOrderItems[index];
         }
         document.getElementById('cityTable').scrollTop = 0;
+      };
+      this.selectCity = function(city) {
+        city.selected = true;
+        if (self.compare1 == undefined) {
+          self.compare1 = city;
+        } else {
+          if (self.compare2 != undefined)
+            self.compare2.selected = false;
+          self.compare2 = city;
+        }
+        if (self.compare1 != undefined && self.compare2 != undefined) {
+          var kmDistance = ConversionsService.getCoordinatesToDistance(self.compare1.coord.lat, self.compare1.coord.lon, self.compare2.coord.lat, self.compare2.coord.lon);
+          console.log(kmDistance);
+        }
       };
     }
     function FirebaseFeedService(FirebaseDataService, MapsService) {
