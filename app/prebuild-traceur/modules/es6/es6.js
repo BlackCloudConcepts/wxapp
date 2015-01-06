@@ -2710,6 +2710,21 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       self.outputWeakmap.push('-- weakmap --');
       self.outputModules = [];
       self.outputModules.push('-- modules --');
+      self.outputPromises = [];
+      self.outputPromises.push('-- promises --');
+      var myPromise = new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          resolve('Los Angeles Dodgers');
+        }, 2000);
+      });
+      myPromise.then(function(val) {
+        self.outputPromises.push(val);
+      }, function(val) {
+        self.outputPromises.push(val);
+      });
+      myPromise.catch(function(val) {
+        self.outputPromises.push('Error: ' + val);
+      });
     }
   })();
   return {};

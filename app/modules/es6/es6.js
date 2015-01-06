@@ -159,6 +159,29 @@ function Es6Controller($scope) {
 	// modules
 	self.outputModules = [];
 	self.outputModules.push('-- modules --');
+
+	// promises
+	self.outputPromises = [];
+	self.outputPromises.push('-- promises --');
+	var myPromise = new Promise(function(resolve, reject){
+		setTimeout(function(){
+			resolve('Los Angeles Dodgers');
+//			reject('FAIL');
+		}, 2000);
+	});
+	myPromise.then(
+		function(val){
+			self.outputPromises.push(val);
+		},
+		function(val){
+			self.outputPromises.push(val);
+		}
+	);
+	myPromise.catch(function(val){
+		self.outputPromises.push('Error: '+val);
+	});
+
+
 }
 
 })(); // END IIFE
