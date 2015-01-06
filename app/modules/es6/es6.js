@@ -21,6 +21,9 @@ Es6Controller.$inject =  ['$scope'];
 function Es6Controller($scope) {
 	var self = this;
 
+	// ECMAScript6 feature and support list
+	// http://kangax.github.io/compat-table/es6/
+
 	// let
 	self.outputLet = [];
 	self.outputLet.push('-- let / block scoping --');
@@ -161,6 +164,8 @@ function Es6Controller($scope) {
 	self.outputModules.push('-- modules --');
 
 	// promises
+	// - race - resolves when one of the promises in iterable resolves
+	// - all - resolves when all of the promises in iterable have resolved
 	self.outputPromises = [];
 	self.outputPromises.push('-- promises --');
 	var myPromise = new Promise(function(resolve, reject){
@@ -181,7 +186,13 @@ function Es6Controller($scope) {
 		self.outputPromises.push('Error: '+val);
 	});
 
+	// proxy
+	self.outputProxy = [];
+        self.outputProxy.push('-- proxy --');	
 
+	//reflect
+	self.outputReflect = [];
+        self.outputReflect.push('-- reflect --');
 }
 
 })(); // END IIFE

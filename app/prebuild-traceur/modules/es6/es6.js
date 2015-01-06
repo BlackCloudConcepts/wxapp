@@ -2725,6 +2725,10 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       myPromise.catch(function(val) {
         self.outputPromises.push('Error: ' + val);
       });
+      self.outputProxy = [];
+      self.outputProxy.push('-- proxy --');
+      self.outputReflect = [];
+      self.outputReflect.push('-- reflect --');
     }
   })();
   return {};
