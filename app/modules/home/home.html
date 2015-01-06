@@ -8,6 +8,7 @@
   			</tabset>
 			<h3>Current Weather Conditions for: {{ctrl.currentRegion}}</h3>
 			<bc-search placeholder="city" search-text="searchText" button-text="Search" clear-text="Clear"></bc-search>
+			<div>{{ctrl.kmDistance}}</div>
 			<table class="table table-striped table_container">
 				<tr class="table_header">
 					<th ng-repeat="header in ctrl.headers" ng-click="ctrl.doSort($index)" class="table_header">{{header}}</th>
@@ -16,12 +17,12 @@
 			<div id="cityTable" style="height:200px;overflow-y:auto;">
 				<table class="table table-striped table_container">
 					<tr ng-repeat="city in ctrl.cities | orderBy:ctrl.sortOrder | filter:{region:ctrl.currentRegion} | filter:{name:ctrl.searchText}">
-						<td class="table_cell_width" style="font-weight:bold;">{{city.name}}</td>
-						<td class="table_cell_width">{{city.main.temp | TemperatureFilter}} &deg;F</td>
-						<td class="table_cell_width">{{city.main.pressure}} mb</td>
-						<td class="table_cell_width">{{city.main.humidity}} %</td>
-						<td class="table_cell_width">{{city.wind.speed}} km/h</td>
-						<td class="table_cell_width">{{city.wind.deg | WindDirectionFilter}}</td>
+						<td ng-class="{table_cell_background : city.selected}" class="table_cell" style="font-weight:bold;" ng-click="ctrl.selectCity(city)">{{city.name}}</td>
+						<td ng-class="{table_cell_background : city.selected}" class="table_cell">{{city.main.temp | TemperatureFilter}} &deg;F</td>
+						<td ng-class="{table_cell_background : city.selected}" class="table_cell">{{city.main.pressure}} mb</td>
+						<td ng-class="{table_cell_background : city.selected}" class="table_cell">{{city.main.humidity}} %</td>
+						<td ng-class="{table_cell_background : city.selected}" class="table_cell">{{city.wind.speed}} km/h</td>
+						<td ng-class="{table_cell_background : city.selected}" class="table_cell">{{city.wind.deg | WindDirectionFilter}}</td>
 					</tr>
 				</table>
 			</div>

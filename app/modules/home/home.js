@@ -18,7 +18,7 @@ angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.c
 .filter('WindDirectionFilter', WindDirectionFilter);
 
 // Dependency injections to controller, services, factories, providers, filters
-HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'CookiesService', 'MapsService'];
+HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'CookiesService', 'MapsService', 'ConversionsService'];
 FirebaseFeedService.$inject = ['FirebaseDataService', 'MapsService'];
 TemperatureFilter.$inject = ['ConversionsService'];
 WindDirectionFilter.$inject = ['ConversionsService'];
@@ -26,7 +26,7 @@ WindDirectionFilter.$inject = ['ConversionsService'];
 // -- Function defining HomeController
 // input : FirebaseFeedService
 // 	 : scope
-function HomeController($scope, FirebaseFeedService, CookiesService, MapsService) {
+function HomeController($scope, FirebaseFeedService, CookiesService, MapsService, ConversionsService) {
 	var self = this;
 	// uses alert directive to set initial message and then clears it
 	this.alertMessage = "Loading";
@@ -41,6 +41,8 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 	this.headers = ['Name','Temperature','Pressure','Humidity','Wind Speed','Wind Direction'];
 	this.sortOrderItems = ['+name', '+main.temp', '+main.pressure', '+main.humidity', '+wind.speed', '+wind.deg'];
 	this.sortOrder = this.sortOrderItems[0];
+	this.compare1 = undefined;
+	this.compare2 = undefined;
 
 	this.testCookie = function(){
 		if (CookiesService.getCookie('username') != ''){
@@ -76,6 +78,23 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 			self.sortOrder = self.sortOrderItems[index];
 		}
 		document.getElementById('cityTable').scrollTop = 0;
+	};
+
+	this.selectCity = function(city){
+		city.selected = true;
+		if (self.compare1 == undefined){
+			self.compare1 = city;
+		} else {
+			if (self.compare2 != undefined)
+				self.compare2.selected = false;
+			self.compare2 = city;
+		}
+
+		// if two cities are selected then compute distance
+		if (self.compare1 != undefined && self.compare2 != undefined){
+			var kmDistance = ConversionsService.getCoordinatesToDistance(self.compare1.coord.lat, self.compare1.coord.lon, self.compare2.coord.lat, self.compare2.coord.lon);
+			console.log(kmDistance);
+		}
 	};
 }
 
