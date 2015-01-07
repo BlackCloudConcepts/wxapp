@@ -2619,17 +2619,31 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
         document.getElementById('cityTable').scrollTop = 0;
       };
       this.selectCity = function(city) {
-        city.selected = true;
-        if (self.compare1 == undefined) {
-          self.compare1 = city;
+        if (!city.selected) {
+          city.selected = true;
+          if (self.compare1 == undefined) {
+            self.compare1 = city;
+          } else {
+            if (self.compare2 != undefined)
+              self.compare2.selected = false;
+            self.compare2 = city;
+          }
+          if (self.compare1 != undefined && self.compare2 != undefined) {
+            self.kmDistance = ConversionsService.getCoordinatesToDistance(self.compare1.coord.lat, self.compare1.coord.lon, self.compare2.coord.lat, self.compare2.coord.lon);
+            self.kmDistanceText = "Distance from " + self.compare1.name + " to " + self.compare2.name + " is " + Math.round(self.kmDistance, 2) + " km";
+          }
         } else {
-          if (self.compare2 != undefined)
-            self.compare2.selected = false;
-          self.compare2 = city;
-        }
-        if (self.compare1 != undefined && self.compare2 != undefined) {
-          var kmDistance = ConversionsService.getCoordinatesToDistance(self.compare1.coord.lat, self.compare1.coord.lon, self.compare2.coord.lat, self.compare2.coord.lon);
-          console.log(kmDistance);
+          city.selected = false;
+          self.kmDistance = 0;
+          self.kmDistanceText = "";
+          if (self.compare1 != undefined) {
+            if (self.compare1.name == city.name)
+              self.compare1 = undefined;
+          }
+          if (self.compare2.name != undefined) {
+            if (self.compare2.name == city.name)
+              self.compare2 = undefined;
+          }
         }
       };
     }

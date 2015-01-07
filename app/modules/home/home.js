@@ -36,6 +36,7 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 		});
 	}, 2000);
 
+	// initialization of default values
 	this.alertType = "info";
 	this.currentRegion = 'TX';
 	this.headers = ['Name','Temperature','Pressure','Humidity','Wind Speed','Wind Direction'];
@@ -44,6 +45,8 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 	this.compare1 = undefined;
 	this.compare2 = undefined;
 
+	// checks that cookie is set
+	// output : boolean
 	this.testCookie = function(){
 		if (CookiesService.getCookie('username') != ''){
 			return true;
@@ -52,18 +55,23 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 		}
 	};
 
+	// check that there is a valid cookie and redirect to login if not
 	if (this.testCookie()){
 		FirebaseFeedService.feed($scope, self);
 	} else {
 		location = '#login';	
 	}
 
+	// change region
+	// - currentRegion which filters table
+	// - redraws map
 	this.switchRegion = function(evt, region){
 		evt.stopPropagation();
 		self.currentRegion = region;
 		MapsService.drawMap(self.cities, self.currentRegion, 'map-canvas');
 	};
 
+	// handles sorting of city table
 	this.doSort = function(index){
 		if (self.sortOrder == self.sortOrderItems[index]){
 			if (self.sortOrder.indexOf('+') != -1){
@@ -80,20 +88,39 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 		document.getElementById('cityTable').scrollTop = 0;
 	};
 
-	this.selectCity = function(city){
-		city.selected = true;
-		if (self.compare1 == undefined){
-			self.compare1 = city;
-		} else {
-			if (self.compare2 != undefined)
-				self.compare2.selected = false;
-			self.compare2 = city;
-		}
 
-		// if two cities are selected then compute distance
-		if (self.compare1 != undefined && self.compare2 != undefined){
-			var kmDistance = ConversionsService.getCoordinatesToDistance(self.compare1.coord.lat, self.compare1.coord.lon, self.compare2.coord.lat, self.compare2.coord.lon);
-			console.log(kmDistance);
+	// compare functionality between 2 cities
+	// - calculates distance between cities to then be combined with humidity to find dryline
+	this.selectCity = function(city){
+		if (!city.selected){
+			city.selected = true;
+			// set compared city
+			if (self.compare1 == undefined){
+				self.compare1 = city;
+			} else {
+				if (self.compare2 != undefined)
+					self.compare2.selected = false;
+				self.compare2 = city;
+			}
+
+			// if two cities are selected then compute distance
+			if (self.compare1 != undefined && self.compare2 != undefined){
+				self.kmDistance = ConversionsService.getCoordinatesToDistance(self.compare1.coord.lat, self.compare1.coord.lon, self.compare2.coord.lat, self.compare2.coord.lon);
+				self.kmDistanceText = "Distance from "+self.compare1.name+" to "+self.compare2.name+" is "+Math.round(self.kmDistance,2)+" km";
+			}
+		} else {
+			city.selected = false;
+			self.kmDistance = 0;
+			self.kmDistanceText = "";
+			// clear city out of compare
+			if (self.compare1 != undefined){
+				if (self.compare1.name == city.name)
+					self.compare1 = undefined;
+			}
+			if (self.compare2.name != undefined){
+				if (self.compare2.name == city.name)
+					self.compare2 = undefined;
+			}
 		}
 	};
 }
