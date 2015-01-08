@@ -1,7 +1,7 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase', 'wxApp.coremodules.maps', 'wxApp.directivemodules.search', 'wxApp.directivemodules.footer', 'wxApp.directivemodules.alert'])
+angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase', 'wxApp.coremodules.maps', 'wxApp.coremodules.tools', 'wxApp.directivemodules.search', 'wxApp.directivemodules.footer', 'wxApp.directivemodules.alert'])
  
 // Declared route 
 .config(['$routeProvider', function($routeProvider) {
@@ -14,19 +14,21 @@ angular.module('wxApp.modules.home', ['ngRoute','firebase', 'wxApp.coremodules.c
 // Define controller, services, factories, providers, filters
 .controller('HomeController', HomeController)
 .service('FirebaseFeedService', FirebaseFeedService)
+.service('DrylineService', DrylineService)
 .filter('TemperatureFilter', TemperatureFilter)
 .filter('WindDirectionFilter', WindDirectionFilter);
 
 // Dependency injections to controller, services, factories, providers, filters
-HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'CookiesService', 'MapsService', 'ConversionsService'];
+HomeController.$inject =  ['$scope', 'FirebaseFeedService', 'DrylineService', 'CookiesService', 'MapsService', 'ConversionsService'];
 FirebaseFeedService.$inject = ['FirebaseDataService', 'MapsService'];
+DrylineService.$inject = ['ConversionsService', 'ToolsService'];
 TemperatureFilter.$inject = ['ConversionsService'];
 WindDirectionFilter.$inject = ['ConversionsService'];
 
 // -- Function defining HomeController
 // input : FirebaseFeedService
 // 	 : scope
-function HomeController($scope, FirebaseFeedService, CookiesService, MapsService, ConversionsService) {
+function HomeController($scope, FirebaseFeedService, DrylineService, CookiesService, MapsService, ConversionsService) {
 	var self = this;
 	// uses alert directive to set initial message and then clears it
 	this.alertMessage = "Loading";
@@ -68,6 +70,7 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 	this.switchRegion = function(evt, region){
 		evt.stopPropagation();
 		self.currentRegion = region;
+		self.message = "";
 		MapsService.drawMap(self.cities, self.currentRegion, 'map-canvas');
 	};
 
@@ -106,7 +109,7 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 			// if two cities are selected then compute distance
 			if (self.compare1 != undefined && self.compare2 != undefined){
 				self.kmDistance = ConversionsService.getCoordinatesToDistance(self.compare1.coord.lat, self.compare1.coord.lon, self.compare2.coord.lat, self.compare2.coord.lon);
-				self.kmDistanceText = "Distance from "+self.compare1.name+" to "+self.compare2.name+" is "+Math.round(self.kmDistance,2)+" km";
+				self.message = "Distance from "+self.compare1.name+" to "+self.compare2.name+" is "+Math.round(self.kmDistance,2)+" km";
 			}
 		} else {
 			city.selected = false;
@@ -122,6 +125,15 @@ function HomeController($scope, FirebaseFeedService, CookiesService, MapsService
 					self.compare2 = undefined;
 			}
 		}
+	};
+
+	this.selectDryline = function(){
+		var drylineValues = DrylineService.calculateDrylineValues(self.cities, self.currentRegion);
+		if (drylineValues[0].cityBHumidity > drylineValues[0].cityAHumidity)
+			self.message = 'Greatest dryline between '+drylineValues[0].cityA+' ('+drylineValues[0].cityAHumidity+'%) and '+drylineValues[0].cityB+' ('+drylineValues[0].cityBHumidity+'%)';
+		else
+			self.message = 'Greatest dryline between '+drylineValues[0].cityB+' ('+drylineValues[0].cityBHumidity+'%) and '+drylineValues[0].cityA+' ('+drylineValues[0].cityAHumidity+'%)';
+			
 	};
 }
 
@@ -158,6 +170,39 @@ function FirebaseFeedService(FirebaseDataService, MapsService){
 		};
 		FirebaseDataService.getUpdates(callbackUpdates);
 	};
+}
+
+// -- Function to calculate drylines
+// input: ConversionService
+// output:
+function DrylineService(ConversionsService, ToolsService){
+
+	// calculates the difference in humidity between two cities as compared to the distance between them
+	this.calculateDrylineValues = function(cities, region){
+		var drylineValues = [];
+		for (let i = 0; i < cities.length; i++){
+			for (let j = 0; j < cities.length;j++){
+				if (cities[i].name != cities[j].name && cities[i].region == cities[j].region && cities[i].region == region){
+					var kmDistance = ConversionsService.getCoordinatesToDistance(cities[i].coord.lat, cities[i].coord.lon, cities[j].coord.lat, cities[j].coord.lon);
+					var humidityDiff = cities[i].main.humidity - cities[j].main.humidity;
+					if (humidityDiff != 0){
+						if (humidityDiff < 0)
+							humidityDiff = humidityDiff * -1;
+						drylineValues.push({
+							region : cities[i].region,
+							cityA : cities[i].name,
+							cityB : cities[j].name,
+							cityAHumidity : cities[i].main.humidity,
+							cityBHumidity : cities[j].main.humidity,
+							delta : humidityDiff / kmDistance
+						});	
+					}
+				}
+			}
+		}
+		drylineValues = ToolsService.sortByAttribute(drylineValues, 'delta', 'desc');
+		return drylineValues;
+	}
 }
 
 // -- Function defining TemperatureFilter

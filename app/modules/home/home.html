@@ -10,7 +10,10 @@
 			<div class="float_left">
 				<bc-search placeholder="city" search-text="searchText" button-text="Search" clear-text="Clear"></bc-search>
 			</div>
-			<div class="float_right">{{ctrl.kmDistanceText}}</div>
+			<div class="float_left" style="margin-left:15px;">
+				<button class="btn btn-sm btn-primary button" ng-click="ctrl.selectDryline()">Calculate Dryline</button>
+			</div>
+			<div class="float_right">{{ctrl.message}}</div>
 			<div class="clear"></div>
 			<div class="table_container">
 				<table class="table table-striped">

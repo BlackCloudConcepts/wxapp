@@ -2567,162 +2567,32 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
   "use strict";
   'use strict';
   (function() {
-    angular.module('wxApp.modules.home', ['ngRoute', 'firebase', 'wxApp.coremodules.cookies', 'wxApp.coremodules.conversions', 'wxApp.datamodules.firebase', 'wxApp.coremodules.maps', 'wxApp.coremodules.tools', 'wxApp.directivemodules.search', 'wxApp.directivemodules.footer', 'wxApp.directivemodules.alert']).config(['$routeProvider', function($routeProvider) {
-      $routeProvider.when('/home', {templateUrl: 'modules/home/home.html'});
-    }]).controller('HomeController', HomeController).service('FirebaseFeedService', FirebaseFeedService).service('DrylineService', DrylineService).filter('TemperatureFilter', TemperatureFilter).filter('WindDirectionFilter', WindDirectionFilter);
-    HomeController.$inject = ['$scope', 'FirebaseFeedService', 'DrylineService', 'CookiesService', 'MapsService', 'ConversionsService'];
-    FirebaseFeedService.$inject = ['FirebaseDataService', 'MapsService'];
-    DrylineService.$inject = ['ConversionsService', 'ToolsService'];
-    TemperatureFilter.$inject = ['ConversionsService'];
-    WindDirectionFilter.$inject = ['ConversionsService'];
-    function HomeController($scope, FirebaseFeedService, DrylineService, CookiesService, MapsService, ConversionsService) {
-      var self = this;
-      this.alertMessage = "Loading";
-      setTimeout(function() {
-        $scope.$apply(function() {
-          self.alertMessage = "";
-        });
-      }, 2000);
-      this.alertType = "info";
-      this.currentRegion = 'TX';
-      this.headers = ['Name', 'Temperature', 'Pressure', 'Humidity', 'Wind Speed', 'Wind Direction'];
-      this.sortOrderItems = ['+name', '+main.temp', '+main.pressure', '+main.humidity', '+wind.speed', '+wind.deg'];
-      this.sortOrder = this.sortOrderItems[0];
-      this.compare1 = undefined;
-      this.compare2 = undefined;
-      this.testCookie = function() {
-        if (CookiesService.getCookie('username') != '') {
-          return true;
-        } else {
-          return false;
+    angular.module('wxApp.coremodules.tools', []).service('ToolsService', ToolsService);
+    ToolsService.$inject = [];
+    function ToolsService() {
+      this.sortByAttribute = function(arrObj, attr, order) {
+        if (order == 'asc')
+          arrObj = arrObj.sort(compareAsc);
+        if (order == 'desc')
+          arrObj = arrObj.sort(compareDesc);
+        return arrObj;
+        function compareAsc(a, b) {
+          if (a[attr] < b[attr])
+            return -1;
+          if (a[attr] > b[attr])
+            return 1;
+          return 0;
         }
-      };
-      if (this.testCookie()) {
-        FirebaseFeedService.feed($scope, self);
-      } else {
-        location = '#login';
-      }
-      this.switchRegion = function(evt, region) {
-        evt.stopPropagation();
-        self.currentRegion = region;
-        self.message = "";
-        MapsService.drawMap(self.cities, self.currentRegion, 'map-canvas');
-      };
-      this.doSort = function(index) {
-        if (self.sortOrder == self.sortOrderItems[index]) {
-          if (self.sortOrder.indexOf('+') != -1) {
-            self.sortOrder = self.sortOrder.replace('+', '-');
-          } else {
-            self.sortOrder = self.sortOrder.replace('-', '+');
-          }
-        } else {
-          self.sortOrder = self.sortOrderItems[index];
+        function compareDesc(a, b) {
+          if (a[attr] < b[attr])
+            return 1;
+          if (a[attr] > b[attr])
+            return -1;
+          return 0;
         }
-        document.getElementById('cityTable').scrollTop = 0;
-      };
-      this.selectCity = function(city) {
-        if (!city.selected) {
-          city.selected = true;
-          if (self.compare1 == undefined) {
-            self.compare1 = city;
-          } else {
-            if (self.compare2 != undefined)
-              self.compare2.selected = false;
-            self.compare2 = city;
-          }
-          if (self.compare1 != undefined && self.compare2 != undefined) {
-            self.kmDistance = ConversionsService.getCoordinatesToDistance(self.compare1.coord.lat, self.compare1.coord.lon, self.compare2.coord.lat, self.compare2.coord.lon);
-            self.message = "Distance from " + self.compare1.name + " to " + self.compare2.name + " is " + Math.round(self.kmDistance, 2) + " km";
-          }
-        } else {
-          city.selected = false;
-          self.kmDistance = 0;
-          self.kmDistanceText = "";
-          if (self.compare1 != undefined) {
-            if (self.compare1.name == city.name)
-              self.compare1 = undefined;
-          }
-          if (self.compare2.name != undefined) {
-            if (self.compare2.name == city.name)
-              self.compare2 = undefined;
-          }
-        }
-      };
-      this.selectDryline = function() {
-        var drylineValues = DrylineService.calculateDrylineValues(self.cities, self.currentRegion);
-        if (drylineValues[0].cityBHumidity > drylineValues[0].cityAHumidity)
-          self.message = 'Greatest dryline between ' + drylineValues[0].cityA + ' (' + drylineValues[0].cityAHumidity + '%) and ' + drylineValues[0].cityB + ' (' + drylineValues[0].cityBHumidity + '%)';
-        else
-          self.message = 'Greatest dryline between ' + drylineValues[0].cityB + ' (' + drylineValues[0].cityBHumidity + '%) and ' + drylineValues[0].cityA + ' (' + drylineValues[0].cityAHumidity + '%)';
-      };
-    }
-    function FirebaseFeedService(FirebaseDataService, MapsService) {
-      var self = this;
-      this.feed = function($scope, callback) {
-        var arrCities = [];
-        var callbackFullDataset = function(message) {
-          Object.keys(message).forEach(function(key) {
-            arrCities.push(message[key]);
-          });
-          callback.cities = arrCities;
-          MapsService.drawMap(arrCities, callback.currentRegion, 'map-canvas');
-        };
-        FirebaseDataService.getFullDataset(callbackFullDataset);
-        var callbackUpdates = function(message) {
-          var $__0 = function(i) {
-            if (message.name == arrCities[i].name) {
-              $scope.$apply(function() {
-                arrCities[i] = message;
-                document.getElementById('map-canvas').innerHTML = '';
-                MapsService.drawMap(arrCities, callback.currentRegion, 'map-canvas');
-              });
-            }
-          };
-          for (var i = 0; i < arrCities.length; i++) {
-            $__0(i);
-          }
-        };
-        FirebaseDataService.getUpdates(callbackUpdates);
-      };
-    }
-    function DrylineService(ConversionsService, ToolsService) {
-      this.calculateDrylineValues = function(cities, region) {
-        var drylineValues = [];
-        for (var i = 0; i < cities.length; i++) {
-          for (var j = 0; j < cities.length; j++) {
-            if (cities[i].name != cities[j].name && cities[i].region == cities[j].region && cities[i].region == region) {
-              var kmDistance = ConversionsService.getCoordinatesToDistance(cities[i].coord.lat, cities[i].coord.lon, cities[j].coord.lat, cities[j].coord.lon);
-              var humidityDiff = cities[i].main.humidity - cities[j].main.humidity;
-              if (humidityDiff != 0) {
-                if (humidityDiff < 0)
-                  humidityDiff = humidityDiff * -1;
-                drylineValues.push({
-                  region: cities[i].region,
-                  cityA: cities[i].name,
-                  cityB: cities[j].name,
-                  cityAHumidity: cities[i].main.humidity,
-                  cityBHumidity: cities[j].main.humidity,
-                  delta: humidityDiff / kmDistance
-                });
-              }
-            }
-          }
-        }
-        drylineValues = ToolsService.sortByAttribute(drylineValues, 'delta', 'desc');
-        return drylineValues;
-      };
-    }
-    function TemperatureFilter(ConversionsService) {
-      return function(kelvin) {
-        return ConversionsService.getTemperatureKelvinToFahrenheit(kelvin);
-      };
-    }
-    function WindDirectionFilter(ConversionService) {
-      return function(deg) {
-        return ConversionService.getWindDirectionDegToText(deg);
       };
     }
   })();
   return {};
 });
-//# sourceURL=app/modules/home/home.js
+//# sourceURL=app/coremodules/tools/tools.js
