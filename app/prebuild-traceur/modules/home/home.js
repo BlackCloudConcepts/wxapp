@@ -2606,6 +2606,14 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
         evt.stopPropagation();
         self.currentRegion = region;
         self.message = "";
+        if (self.compare1 != undefined) {
+          self.compare1.selected = false;
+          self.compare1 = undefined;
+        }
+        if (self.compare2 != undefined) {
+          self.compare2.selected = false;
+          self.compare2 = undefined;
+        }
         MapsService.drawMap(self.cities, self.currentRegion, 'map-canvas');
       };
       this.doSort = function(index) {
@@ -2642,10 +2650,12 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
             if (self.compare1.name == city.name)
               self.compare1 = undefined;
           }
-          if (self.compare2.name != undefined) {
+          if (self.compare2 != undefined) {
             if (self.compare2.name == city.name)
               self.compare2 = undefined;
           }
+          if (self.compare1 == undefined || self.compare2 == undefined)
+            self.message = "";
         }
       };
       this.selectDryline = function() {

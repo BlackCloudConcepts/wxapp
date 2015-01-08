@@ -107,7 +107,6 @@ module.exports = function (grunt) {
 					'app/js/filters.js',
 					'app/js/directives.js',
 					// 6 to 5 
-					/*
 					'app/prebuild/modules/login/login.js',
 					'app/prebuild/modules/home/home.js',
 					'app/prebuild/modules/logout/logout.js',
@@ -116,12 +115,13 @@ module.exports = function (grunt) {
 					'app/prebuild/coremodules/cookies/cookies.js',
 					'app/prebuild/coremodules/conversions/conversions.js',
 					'app/prebuild/coremodules/maps/maps.js',
+					'app/prebuild/coremodules/tools/tools.js',
 					'app/prebuild/datamodules/firebase/firebase.js',
 					'app/prebuild/directivemodules/search/search.js',	
 					'app/prebuild/directivemodules/footer/footer.js',	
 					'app/prebuild/directivemodules/alert/alert.js'
-					*/
 					// Traceur
+					/*
 					'app/prebuild-traceur/modules/login/login.js',
 					'app/prebuild-traceur/modules/home/home.js',
 					'app/prebuild-traceur/modules/logout/logout.js',
@@ -135,7 +135,7 @@ module.exports = function (grunt) {
 					'app/prebuild-traceur/directivemodules/search/search.js',	
 					'app/prebuild-traceur/directivemodules/footer/footer.js',	
 					'app/prebuild-traceur/directivemodules/alert/alert.js'	
-	
+					*/
 				]
       			}
     		}
