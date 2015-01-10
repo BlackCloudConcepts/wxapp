@@ -217,10 +217,41 @@ var _inherits = function (child, parent) {
 
     // proxy
     self.outputProxy = [];
-    self.outputProxy.push("-- proxy --");
+    self.outputProxy.push("-- proxy (supported in FF) --");
+    console.log("-- proxy logging --");
+    if (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) {
+      var proxyObj = { sport: "baseball", team: "Chicago Cubs", id: 21 };
+      var interceptor = {
+        // setter adds 1 to the id every time its set
+        set: function (receiver, property, value) {
+          value++;
+          receiver[property] = value;
+        },
+        // getter changes the team name every time its called
+        get: function (target, name) {
+          target.team = "Los Angeles Dodgers";
+          return target[name];
+        }
+      };
+      proxyObj = new Proxy(proxyObj, interceptor);
+      proxyObj.id = 13;
+      console.log("Proxy:" + proxyObj.team + ":" + proxyObj.id);
+    }
 
     //reflect
     self.outputReflect = [];
-    self.outputReflect.push("-- reflect --");
+    self.outputReflect.push("-- reflect (supported in FF) --");
+    console.log("-- reflect logging --");
+    if (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) {
+      var reflectObj = { sport: "baseball", team: "Chicago Cubs", id: 21 };
+      var handler = Proxy(reflectObj, {
+        get: function (target, trapName, receiver) {
+          target.team = "New York Yankees";
+          return Reflect[trapName];
+        }
+      });
+      var reflectObj = Proxy(reflectObj, handler);
+      console.log("Reflect:" + reflectObj.team + ":" + reflectObj.id);
+    }
   }
 })(); // END IIFE

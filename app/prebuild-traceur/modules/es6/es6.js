@@ -2726,9 +2726,44 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
         self.outputPromises.push('Error: ' + val);
       });
       self.outputProxy = [];
-      self.outputProxy.push('-- proxy --');
+      self.outputProxy.push('-- proxy (supported in FF) --');
+      console.log('-- proxy logging --');
+      if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        var proxyObj = {
+          'sport': 'baseball',
+          'team': 'Chicago Cubs',
+          'id': 21
+        };
+        var interceptor = {
+          set: function(receiver, property, value) {
+            value++;
+            receiver[property] = value;
+          },
+          get: function(target, name) {
+            target.team = "Los Angeles Dodgers";
+            return target[name];
+          }
+        };
+        proxyObj = new Proxy(proxyObj, interceptor);
+        proxyObj.id = 13;
+        console.log("Proxy:" + proxyObj.team + ":" + proxyObj.id);
+      }
       self.outputReflect = [];
-      self.outputReflect.push('-- reflect --');
+      self.outputReflect.push('-- reflect (supported in FF) --');
+      console.log('-- reflect logging --');
+      if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        var reflectObj = {
+          'sport': 'baseball',
+          'team': 'Chicago Cubs',
+          'id': 21
+        };
+        var handler = Proxy(reflectObj, {get: function(target, trapName, receiver) {
+            target.team = 'New York Yankees';
+            return Reflect[trapName];
+          }});
+        var reflectObj = Proxy(reflectObj, handler);
+        console.log("Reflect:" + reflectObj.team + ":" + reflectObj.id);
+      }
     }
   })();
   return {};
