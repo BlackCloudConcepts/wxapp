@@ -27,6 +27,7 @@ function Es6Controller($scope) {
 	// let
 	self.outputLet = [];
 	self.outputLet.push('-- let / block scoping --');
+	console.log('-- Let / Block Scoping Logging --');
 	for (let i = 0;i < 4;i++){
 		self.outputLet.push(i);
 	}
@@ -34,6 +35,7 @@ function Es6Controller($scope) {
 	// generators / yield
 	self.outputGenerator = [];
 	self.outputGenerator.push('-- generator / yield --');
+	console.log('-- Generator / Yield Logging --');
 	runGenerator();
 	function runGenerator() {
 	  	var iterator = onetofive();
@@ -53,6 +55,7 @@ function Es6Controller($scope) {
 	// arrow functions (eliminate the need for redefining this)
 	self.outputArrow = [];
 	self.outputArrow.push('-- arrow function / this --');
+	console.log('-- Arrow Function / This Logging --');
 	let rA = new runArrow();
 	function runArrow(){
 		this.count = 109;
@@ -68,6 +71,7 @@ function Es6Controller($scope) {
 	// classes
 	self.outputClass = [];
 	self.outputClass.push('-- classes --');
+	console.log('-- Classes Logging --');
 	class baseClass {
 		constructor(){
 			this.teams = {
@@ -94,13 +98,13 @@ function Es6Controller($scope) {
 	// set 
 	self.outputSet = [];
 	self.outputSet.push('-- set --');
+	console.log('-- Set Logging --');
 	let collection = new Set([]);
 	collection.add("Chicago Cubs");
 	collection.add("New York Yankees");
 	collection.forEach(function(arg){
 		self.outputSet.push(arg);
 	});
-	console.log('-- Set Logging --');
 	var entries = collection.entries();
 	var entry = entries.next();
 	while (!entry.done){
@@ -124,6 +128,7 @@ function Es6Controller($scope) {
 	// weakset
 	self.outputWeakset = [];
 	self.outputWeakset.push('-- weakset --');
+	console.log('-- Weakset Logging --');
 
 	// http://www.sitepoint.com/preparing-ecmascript-6-map-weakmap/
 	// map
@@ -157,17 +162,20 @@ function Es6Controller($scope) {
 	// weakmap
 	self.outputWeakmap = [];
 	self.outputWeakmap.push('-- weakmap --');
+	console.log('-- Weakmap Logging --');
 
 	// http://www.2ality.com/2013/07/es6-modules.html
 	// modules
 	self.outputModules = [];
 	self.outputModules.push('-- modules --');
+	console.log('-- Modules Logging --');
 
 	// promises
 	// - race - resolves when one of the promises in iterable resolves
 	// - all - resolves when all of the promises in iterable have resolved
 	self.outputPromises = [];
 	self.outputPromises.push('-- promises --');
+	console.log('-- Promises Logging --');
 	var myPromise = new Promise(function(resolve, reject){
 		setTimeout(function(){
 			resolve('Los Angeles Dodgers');
@@ -189,7 +197,7 @@ function Es6Controller($scope) {
 	// proxy
 	self.outputProxy = [];
         self.outputProxy.push('-- proxy (supported in FF) --');
-	console.log('-- proxy logging --');
+	console.log('-- Proxy Logging --');
 	if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
 	{
 		var proxyObj = {'sport':'baseball','team':'Chicago Cubs', 'id':21};
@@ -213,7 +221,7 @@ function Es6Controller($scope) {
 	//reflect
 	self.outputReflect = [];
         self.outputReflect.push('-- reflect (supported in FF) --');
-	console.log('-- reflect logging --');
+	console.log('-- Reflect Logging --');
 	if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
         {
                 var reflectObj = {'sport':'baseball','team':'Chicago Cubs', 'id':21};
@@ -226,6 +234,70 @@ function Es6Controller($scope) {
 		var reflectObj = Proxy(reflectObj, handler);
                 console.log("Reflect:"+reflectObj.team+":"+reflectObj.id);
         }
+
+	// symbols https://leanpub.com/understandinges6/read/#leanpub-auto-symbols
+	self.outputSymbols = [];
+	self.outputSymbols.push('-- symbols --');
+	console.log('-- Symbols Logging --');
+	var myTeamKey = Symbol('baseball team key');
+	var team = {};
+	team[myTeamKey] = 21;
+//	console.log(team);
+	self.outputSymbols.push(team[myTeamKey]);
+//	console.log(myTeamKey);
+//	Object.defineProperty(team, myTeamKey, {writable:false});
+//	team[myTeamKey] = 28;
+//	console.log(team[myTeamKey]);
+
+	// templates
+	self.outputTemplates = [];
+	self.outputTemplates.push('-- templates --');
+	console.log('-- Templates Logging --');
+	
+	// destructuring
+	self.outputDestructuring = [];
+	self.outputDestructuring.push('-- destructuring --');
+	console.log('-- Destructuring Logging --');
+	var myArr = [1,2,3];
+	var [one, two, three] = myArr;
+	self.outputDestructuring.push(one);
+	self.outputDestructuring.push(two);
+	self.outputDestructuring.push(three);
+	var myObj = {item1:4,item2:5,item3:6};
+	var {item1:a,item2:b,item3:c} = myObj;
+	self.outputDestructuring.push(a);
+
+	// default
+	self.outputDefault = [];
+	self.outputDefault.push('-- default --');
+	console.log('-- Default Logging --');
+	var defaultFunction = function(x, y=3){
+		self.outputDefault.push(x);
+		self.outputDefault.push(y);
+	};
+	defaultFunction(12);
+
+	// rest
+	self.outputRest = [];
+	self.outputRest.push('-- rest --');
+	console.log('-- Rest Logging --');
+	var restFunction = function(x, ...y){
+		var total = 0;
+		total += x;
+		for (let i of y){
+			total += i;
+		}
+		self.outputRest.push(total);
+	};
+	restFunction(1,2,3,4,5);
+
+	// spread
+	self.outputSpread = [];
+	self.outputSpread.push('-- spread --');
+	console.log('-- Spread Logging --');
+	var spreadValues = [1,4,6,3];
+	var spreadMax = Math.max(...spreadValues);
+	self.outputSpread.push(spreadMax);
 }
 
 })(); // END IIFE

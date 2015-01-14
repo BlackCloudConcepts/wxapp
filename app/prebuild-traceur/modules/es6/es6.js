@@ -2572,15 +2572,18 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
     }]).controller('Es6Controller', Es6Controller);
     Es6Controller.$inject = ['$scope'];
     function Es6Controller($scope) {
-      var $__2 = $traceurRuntime.initGeneratorFunction(onetofive);
+      var $__8 = $traceurRuntime.initGeneratorFunction(onetofive);
+      var $__7;
       var self = this;
       self.outputLet = [];
       self.outputLet.push('-- let / block scoping --');
+      console.log('-- Let / Block Scoping Logging --');
       for (var i = 0; i < 4; i++) {
         self.outputLet.push(i);
       }
       self.outputGenerator = [];
       self.outputGenerator.push('-- generator / yield --');
+      console.log('-- Generator / Yield Logging --');
       runGenerator();
       function runGenerator() {
         var iterator = onetofive();
@@ -2615,10 +2618,11 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
               default:
                 return $ctx.end();
             }
-        }, $__2, this);
+        }, $__8, this);
       }
       self.outputArrow = [];
       self.outputArrow.push('-- arrow function / this --');
+      console.log('-- Arrow Function / This Logging --');
       var rA = new runArrow();
       function runArrow() {
         var $__0 = this;
@@ -2633,6 +2637,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       }
       self.outputClass = [];
       self.outputClass.push('-- classes --');
+      console.log('-- Classes Logging --');
       var baseClass = function baseClass() {
         this.teams = {
           't1': "Chicago Cubs",
@@ -2653,13 +2658,13 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       bObj.printBaseballTeam('t1');
       self.outputSet = [];
       self.outputSet.push('-- set --');
+      console.log('-- Set Logging --');
       var collection = new Set([]);
       collection.add("Chicago Cubs");
       collection.add("New York Yankees");
       collection.forEach(function(arg) {
         self.outputSet.push(arg);
       });
-      console.log('-- Set Logging --');
       var entries = collection.entries();
       var entry = entries.next();
       while (!entry.done) {
@@ -2680,6 +2685,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       });
       self.outputWeakset = [];
       self.outputWeakset.push('-- weakset --');
+      console.log('-- Weakset Logging --');
       self.outputMap = [];
       self.outputMap.push('-- map --');
       console.log('-- Map Logging --');
@@ -2708,10 +2714,13 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       }
       self.outputWeakmap = [];
       self.outputWeakmap.push('-- weakmap --');
+      console.log('-- Weakmap Logging --');
       self.outputModules = [];
       self.outputModules.push('-- modules --');
+      console.log('-- Modules Logging --');
       self.outputPromises = [];
       self.outputPromises.push('-- promises --');
+      console.log('-- Promises Logging --');
       var myPromise = new Promise(function(resolve, reject) {
         setTimeout(function() {
           resolve('Los Angeles Dodgers');
@@ -2727,7 +2736,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       });
       self.outputProxy = [];
       self.outputProxy.push('-- proxy (supported in FF) --');
-      console.log('-- proxy logging --');
+      console.log('-- Proxy Logging --');
       if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
         var proxyObj = {
           'sport': 'baseball',
@@ -2750,7 +2759,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       }
       self.outputReflect = [];
       self.outputReflect.push('-- reflect (supported in FF) --');
-      console.log('-- reflect logging --');
+      console.log('-- Reflect Logging --');
       if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
         var reflectObj = {
           'sport': 'baseball',
@@ -2764,6 +2773,71 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
         var reflectObj = Proxy(reflectObj, handler);
         console.log("Reflect:" + reflectObj.team + ":" + reflectObj.id);
       }
+      self.outputSymbols = [];
+      self.outputSymbols.push('-- symbols --');
+      console.log('-- Symbols Logging --');
+      var myTeamKey = Symbol('baseball team key');
+      var team = {};
+      team[myTeamKey] = 21;
+      self.outputSymbols.push(team[myTeamKey]);
+      self.outputTemplates = [];
+      self.outputTemplates.push('-- templates --');
+      console.log('-- Templates Logging --');
+      self.outputDestructuring = [];
+      self.outputDestructuring.push('-- destructuring --');
+      console.log('-- Destructuring Logging --');
+      var myArr = [1, 2, 3];
+      var $__5 = myArr,
+          one = $__5[0],
+          two = $__5[1],
+          three = $__5[2];
+      self.outputDestructuring.push(one);
+      self.outputDestructuring.push(two);
+      self.outputDestructuring.push(three);
+      var myObj = {
+        item1: 4,
+        item2: 5,
+        item3: 6
+      };
+      var $__6 = myObj,
+          a = $__6.item1,
+          b = $__6.item2,
+          c = $__6.item3;
+      self.outputDestructuring.push(a);
+      self.outputDefault = [];
+      self.outputDefault.push('-- default --');
+      console.log('-- Default Logging --');
+      var defaultFunction = function(x) {
+        var y = arguments[1] !== (void 0) ? arguments[1] : 3;
+        self.outputDefault.push(x);
+        self.outputDefault.push(y);
+      };
+      defaultFunction(12);
+      self.outputRest = [];
+      self.outputRest.push('-- rest --');
+      console.log('-- Rest Logging --');
+      var restFunction = function(x) {
+        for (var y = [],
+            $__4 = 1; $__4 < arguments.length; $__4++)
+          y[$__4 - 1] = arguments[$__4];
+        var total = 0;
+        total += x;
+        for (var $__2 = y[$traceurRuntime.toProperty(Symbol.iterator)](),
+            $__3; !($__3 = $__2.next()).done; ) {
+          var i = $__3.value;
+          {
+            total += i;
+          }
+        }
+        self.outputRest.push(total);
+      };
+      restFunction(1, 2, 3, 4, 5);
+      self.outputSpread = [];
+      self.outputSpread.push('-- spread --');
+      console.log('-- Spread Logging --');
+      var spreadValues = [1, 4, 6, 3];
+      var spreadMax = ($__7 = Math).max.apply($__7, $traceurRuntime.spread(spreadValues));
+      self.outputSpread.push(spreadMax);
     }
   })();
   return {};

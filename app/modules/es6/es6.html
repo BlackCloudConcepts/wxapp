@@ -43,6 +43,28 @@
                                         <div ng-repeat="output in ctrl.outputReflect">{{output}}</div>
                                 </div>
                         </div>
+			<div class="row">
+				<div class="col-xs-3">
+                                        <div ng-repeat="output in ctrl.outputSymbols">{{output}}</div>
+                                </div>
+				<div class="col-xs-3">
+					<div ng-repeat="output in ctrl.outputTemplates">{{output}}</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-3">
+                                        <div ng-repeat="output in ctrl.outputDestructuring">{{output}}</div>
+                                </div>
+				<div class="col-xs-3">
+                                        <div ng-repeat="output in ctrl.outputDefault">{{output}}</div>
+                                </div>
+				<div class="col-xs-3">
+                                        <div ng-repeat="output in ctrl.outputRest">{{output}}</div>
+                                </div>
+				<div class="col-xs-3">
+                                        <div ng-repeat="output in ctrl.outputSpread">{{output}}</div>
+                                </div>	
+			</div>
             	</div>
 	</div>
 </div> 
