@@ -1,11 +1,11 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('wxApp.coremodules.maps', ['wxApp.coremodules.conversions'])
+angular.module('wxApp.coremodules.maps', ['wxApp.coremodules.conversions', 'wxApp.coremodules.wxattributes'])
 .service('MapsService', MapsService);
-MapsService.$inject = ['ConversionsService'];
+MapsService.$inject = ['ConversionsService', 'WxAttributesService'];
 
-function MapsService(ConversionsService){
+function MapsService(ConversionsService, WxAttributesService){
 
 	// generic mapping function to route to appropriate service
 	// input: arrCities - array of cities and their related data
@@ -15,7 +15,7 @@ function MapsService(ConversionsService){
 		this.drawGoogleMap(arrCities, currentRegion, containerId);
 	}
 
-
+/*
 	// draws open layer map 
 	// input: arrCities - array of cities and their related data
         //      : currentRegion - current region of cities to limit list to and focus map on
@@ -64,6 +64,7 @@ console.log(lon);
 		map.addControl(selectControl);
 		selectControl.activate(); 
 	}
+*/
 
 	// draws google map with markers and popups for indicated locations
 	// input: arrCities - array of cities and their related data
@@ -78,6 +79,10 @@ console.log(lon);
 			}
 		}
 		arrCities = arr;
+
+		// find drylines
+		var drylineValues = WxAttributesService.calculateDrylineValues(arrCities, currentRegion);
+		var drylineCoordinates = [[[drylineValues[0].cityACoord.lon, drylineValues[0].cityACoord.lat], [drylineValues[0].cityBCoord.lon, drylineValues[0].cityBCoord.lat]]];
 
 		// draw map
 		var mapOptions = {
@@ -100,9 +105,8 @@ console.log(lon);
 			"ascii": "71"
 		      },
 		      "geometry": {
-			"type": "Polygon",
-//			"type": "MultiLineString",
-			"coordinates": [
+//			"type": "Polygon",
+/*			"coordinates": [
 			  [
 			    [123.61, -22.14], [122.38, -21.73], [121.06, -21.69], [119.66, -22.22], [119.00, -23.40],
 			    [118.65, -24.76], [118.43, -26.07], [118.78, -27.56], [119.22, -28.57], [120.23, -29.49],
@@ -113,7 +117,10 @@ console.log(lon);
 			    [120.10, -25.64], [120.27, -24.52], [120.67, -23.68], [121.72, -23.32], [122.43, -23.48],
 			    [123.04, -24.04], [124.54, -24.28], [124.58, -23.20], [123.61, -22.14]
 			  ]
-			]
+			]*/
+			"type": "MultiLineString",
+			"coordinates": drylineCoordinates
+//			"coordinates": [[[-97.93, 29.89],[-97.93, 30.08]]]
 		      }
 		    }
 		  ]
@@ -123,8 +130,9 @@ console.log(lon);
 //		map.data.loadGeoJson('https://storage.googleapis.com/maps-devrel/google.json');
 
 		var featureStyle = {
-		    fillColor: 'green',
-		    strokeWeight: 1
+//		    fillColor: 'green',
+			strokeColor: 'green',
+			strokeWeight: 4
 		}
 		map.data.setStyle(featureStyle);
 

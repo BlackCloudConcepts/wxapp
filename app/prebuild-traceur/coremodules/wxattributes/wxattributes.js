@@ -2567,81 +2567,38 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
   "use strict";
   'use strict';
   (function() {
-    angular.module('wxApp.coremodules.maps', ['wxApp.coremodules.conversions', 'wxApp.coremodules.wxattributes']).service('MapsService', MapsService);
-    MapsService.$inject = ['ConversionsService', 'WxAttributesService'];
-    function MapsService(ConversionsService, WxAttributesService) {
-      this.drawMap = function(arrCities, currentRegion, containerId) {
-        this.drawGoogleMap(arrCities, currentRegion, containerId);
-      };
-      this.drawGoogleMap = function(arrCities, currentRegion, containerId) {
-        var arr = [];
-        for (var i = 0; i < arrCities.length; i++) {
-          if (arrCities[i].region == currentRegion) {
-            arr.push(arrCities[i]);
+    angular.module('wxApp.coremodules.wxattributes', ['wxApp.coremodules.conversions', 'wxApp.coremodules.tools']).service('WxAttributesService', WxAttributesService);
+    WxAttributesService.$inject = ['ConversionsService', 'ToolsService'];
+    function WxAttributesService(ConversionsService, ToolsService) {
+      this.calculateDrylineValues = function(cities, region) {
+        var drylineValues = [];
+        for (var i = 0; i < cities.length; i++) {
+          for (var j = 0; j < cities.length; j++) {
+            if (cities[i].name != cities[j].name && cities[i].region == cities[j].region && cities[i].region == region) {
+              var kmDistance = ConversionsService.getCoordinatesToDistance(cities[i].coord.lat, cities[i].coord.lon, cities[j].coord.lat, cities[j].coord.lon);
+              var humidityDiff = cities[i].main.humidity - cities[j].main.humidity;
+              if (humidityDiff != 0) {
+                if (humidityDiff < 0)
+                  humidityDiff = humidityDiff * -1;
+                drylineValues.push({
+                  region: cities[i].region,
+                  cityA: cities[i].name,
+                  cityB: cities[j].name,
+                  cityAHumidity: cities[i].main.humidity,
+                  cityBHumidity: cities[j].main.humidity,
+                  cityACoord: cities[i].coord,
+                  cityBCoord: cities[j].coord,
+                  delta: humidityDiff / kmDistance
+                });
+              }
+            }
           }
         }
-        arrCities = arr;
-        var drylineValues = WxAttributesService.calculateDrylineValues(arrCities, currentRegion);
-        var drylineCoordinates = [[[drylineValues[0].cityACoord.lon, drylineValues[0].cityACoord.lat], [drylineValues[0].cityBCoord.lon, drylineValues[0].cityBCoord.lat]]];
-        var mapOptions = {
-          center: {
-            lat: arrCities[0].coord.lat,
-            lng: arrCities[0].coord.lon
-          },
-          zoom: 8
-        };
-        var map = new google.maps.Map(document.getElementById(containerId), mapOptions);
-        var myData = {
-          "type": "FeatureCollection",
-          "features": [{
-            "type": "Feature",
-            "properties": {
-              "letter": "G",
-              "color": "blue",
-              "rank": "7",
-              "ascii": "71"
-            },
-            "geometry": {
-              "type": "MultiLineString",
-              "coordinates": drylineCoordinates
-            }
-          }]
-        };
-        map.data.addGeoJson(myData);
-        var featureStyle = {
-          strokeColor: 'green',
-          strokeWeight: 4
-        };
-        map.data.setStyle(featureStyle);
-        var markers = {};
-        for (var i = 0; i < arrCities.length; i++) {
-          (function() {
-            var name = arrCities[i].name;
-            var temp = ConversionsService.getTemperatureKelvinToFahrenheit(arrCities[i].main.temp);
-            var pressure = arrCities[i].main.pressure;
-            var humidity = arrCities[i].main.humidity;
-            var windspeed = arrCities[i].wind.speed;
-            var winddirection = ConversionsService.getWindDirectionDegToText(arrCities[i].wind.deg);
-            var contentString = '<div id="content" style="width:200px">' + '<div id="bodyContent">' + '<div>' + name + '</div>' + '<div style="font-size:8pt;">Temperature: ' + temp + ' &deg;F</div>' + '<div style="font-size:8pt;">Pressure: ' + pressure + ' mb</div>' + '<div style="font-size:8pt;">Humidity: ' + humidity + ' %</div>' + '<div style="font-size:8pt;">Wind Speed: ' + windspeed + ' km/h</div>' + '<div style="font-size:8pt;">Wind Direction: ' + winddirection + '</div>' + '</div>' + '</div>';
-            var infowindow = new google.maps.InfoWindow({content: contentString});
-            var lat = arrCities[i].coord.lat;
-            var lon = arrCities[i].coord.lon;
-            var marker = new google.maps.Marker({
-              position: new google.maps.LatLng(lat, lon),
-              map: map,
-              title: name,
-              icon: 'http://cdnimages.magicseaweed.com/30x30/5.png'
-            });
-            markers[i] = marker;
-            var x = i;
-            google.maps.event.addListener(marker, 'click', function() {
-              infowindow.open(map, markers[x]);
-            });
-          })();
-        }
+        drylineValues = ToolsService.sortByAttribute(drylineValues, 'delta', 'desc');
+        return drylineValues;
       };
     }
   })();
   return {};
 });
-//# sourceURL=app/coremodules/maps/maps.js
+//# sourceURL=app/coremodules/wxattributes/wxattributes.js
