@@ -2574,7 +2574,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
         var drylineValues = [];
         for (var i = 0; i < cities.length; i++) {
           for (var j = 0; j < cities.length; j++) {
-            if (cities[i].name != cities[j].name && cities[i].region == cities[j].region && cities[i].region == region) {
+            if (j > i && cities[i].name != cities[j].name && cities[i].region == cities[j].region && cities[i].region == region) {
               var kmDistance = ConversionsService.getCoordinatesToDistance(cities[i].coord.lat, cities[i].coord.lon, cities[j].coord.lat, cities[j].coord.lon);
               var humidityDiff = cities[i].main.humidity - cities[j].main.humidity;
               if (humidityDiff != 0) {

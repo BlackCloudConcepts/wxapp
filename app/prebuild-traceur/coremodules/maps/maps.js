@@ -2567,9 +2567,9 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
   "use strict";
   'use strict';
   (function() {
-    angular.module('wxApp.coremodules.maps', ['wxApp.coremodules.conversions', 'wxApp.coremodules.wxattributes']).service('MapsService', MapsService);
-    MapsService.$inject = ['ConversionsService', 'WxAttributesService'];
-    function MapsService(ConversionsService, WxAttributesService) {
+    angular.module('wxApp.coremodules.maps', ['wxApp.coremodules.conversions', 'wxApp.coremodules.wxattributes', 'wxApp.coremodules.tools']).service('MapsService', MapsService);
+    MapsService.$inject = ['ConversionsService', 'WxAttributesService', 'ToolsService'];
+    function MapsService(ConversionsService, WxAttributesService, ToolsService) {
       this.drawMap = function(arrCities, currentRegion, containerId) {
         this.drawGoogleMap(arrCities, currentRegion, containerId);
       };
@@ -2581,8 +2581,6 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
           }
         }
         arrCities = arr;
-        var drylineValues = WxAttributesService.calculateDrylineValues(arrCities, currentRegion);
-        var drylineCoordinates = [[[drylineValues[0].cityACoord.lon, drylineValues[0].cityACoord.lat], [drylineValues[0].cityBCoord.lon, drylineValues[0].cityBCoord.lat]]];
         var mapOptions = {
           center: {
             lat: arrCities[0].coord.lat,
@@ -2591,28 +2589,85 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
           zoom: 8
         };
         var map = new google.maps.Map(document.getElementById(containerId), mapOptions);
+        var drylineValues = WxAttributesService.calculateDrylineValues(arrCities, currentRegion);
+        var points = ToolsService.getPerpendicularLine({
+          lat: drylineValues[0].cityACoord.lat,
+          lon: drylineValues[0].cityACoord.lon
+        }, {
+          lat: drylineValues[0].cityBCoord.lat,
+          lon: drylineValues[0].cityBCoord.lon
+        });
+        var drylineCoordinates1 = [[[points.pointA.lon, points.pointA.lat], [points.pointB.lon, points.pointB.lat]]];
+        var points = ToolsService.getPerpendicularLine({
+          lat: drylineValues[1].cityACoord.lat,
+          lon: drylineValues[1].cityACoord.lon
+        }, {
+          lat: drylineValues[1].cityBCoord.lat,
+          lon: drylineValues[1].cityBCoord.lon
+        });
+        var drylineCoordinates2 = [[[points.pointA.lon, points.pointA.lat], [points.pointB.lon, points.pointB.lat]]];
+        var points = ToolsService.getPerpendicularLine({
+          lat: drylineValues[2].cityACoord.lat,
+          lon: drylineValues[2].cityACoord.lon
+        }, {
+          lat: drylineValues[2].cityBCoord.lat,
+          lon: drylineValues[2].cityBCoord.lon
+        });
+        var drylineCoordinates3 = [[[points.pointA.lon, points.pointA.lat], [points.pointB.lon, points.pointB.lat]]];
         var myData = {
           "type": "FeatureCollection",
           "features": [{
             "type": "Feature",
-            "properties": {
-              "letter": "G",
-              "color": "blue",
-              "rank": "7",
-              "ascii": "71"
-            },
+            "properties": {"delta": drylineValues[0].delta},
             "geometry": {
               "type": "MultiLineString",
-              "coordinates": drylineCoordinates
+              "coordinates": drylineCoordinates1
+            },
+            "style": {
+              "strokeColor": "green",
+              "strokeWeight": 4
+            }
+          }, {
+            "type": "Feature",
+            "properties": {"delta": drylineValues[1].delta},
+            "geometry": {
+              "type": "MultiLineString",
+              "coordinates": drylineCoordinates2
+            },
+            "style": {
+              "strokeColor": "green",
+              "strokeWeight": 4
+            }
+          }, {
+            "type": "Feature",
+            "properties": {"delta": drylineValues[2].delta},
+            "geometry": {
+              "type": "MultiLineString",
+              "coordinates": drylineCoordinates3
+            },
+            "style": {
+              "strokeColor": "green",
+              "strokeWeight": 4
             }
           }]
         };
         map.data.addGeoJson(myData);
-        var featureStyle = {
-          strokeColor: 'green',
-          strokeWeight: 4
-        };
-        map.data.setStyle(featureStyle);
+        map.data.setStyle(function(feature) {
+          var delta = feature.getProperty('delta');
+          var color = 'blue';
+          if (delta > 1)
+            color = 'red';
+          else if (delta > .75)
+            color = 'orange';
+          else if (delta > .5)
+            color = 'yellow';
+          else if (delta > .1)
+            color = 'green';
+          return {
+            strokeColor: color,
+            strokeWeight: 4
+          };
+        });
         var markers = {};
         for (var i = 0; i < arrCities.length; i++) {
           (function() {

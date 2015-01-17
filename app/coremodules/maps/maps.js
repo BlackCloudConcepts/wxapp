@@ -1,11 +1,11 @@
 'use strict';
 (function(){ // START IIFE
 
-angular.module('wxApp.coremodules.maps', ['wxApp.coremodules.conversions', 'wxApp.coremodules.wxattributes'])
+angular.module('wxApp.coremodules.maps', ['wxApp.coremodules.conversions', 'wxApp.coremodules.wxattributes', 'wxApp.coremodules.tools'])
 .service('MapsService', MapsService);
-MapsService.$inject = ['ConversionsService', 'WxAttributesService'];
+MapsService.$inject = ['ConversionsService', 'WxAttributesService', 'ToolsService'];
 
-function MapsService(ConversionsService, WxAttributesService){
+function MapsService(ConversionsService, WxAttributesService, ToolsService){
 
 	// generic mapping function to route to appropriate service
 	// input: arrCities - array of cities and their related data
@@ -80,10 +80,6 @@ console.log(lon);
 		}
 		arrCities = arr;
 
-		// find drylines
-		var drylineValues = WxAttributesService.calculateDrylineValues(arrCities, currentRegion);
-		var drylineCoordinates = [[[drylineValues[0].cityACoord.lon, drylineValues[0].cityACoord.lat], [drylineValues[0].cityBCoord.lon, drylineValues[0].cityBCoord.lat]]];
-
 		// draw map
 		var mapOptions = {
 			center: { lat: arrCities[0].coord.lat, lng: arrCities[0].coord.lon},
@@ -91,50 +87,95 @@ console.log(lon);
 		};
 		var map = new google.maps.Map(document.getElementById(containerId), mapOptions);
 	
-		// build any visualization data dynamically
-		// http://geojson.org/geojson-spec.html#linestring	
+		// add dryline layers
+		// - http://geojson.org/geojson-spec.html#linestring	
+		var drylineValues = WxAttributesService.calculateDrylineValues(arrCities, currentRegion);
+//		var drylineCoordinates1 = [[[drylineValues[0].cityACoord.lon, drylineValues[0].cityACoord.lat], [drylineValues[0].cityBCoord.lon, drylineValues[0].cityBCoord.lat]]];
+//		var drylineCoordinates2 = [[[drylineValues[1].cityACoord.lon, drylineValues[1].cityACoord.lat], [drylineValues[1].cityBCoord.lon, drylineValues[1].cityBCoord.lat]]];
+//		var drylineCoordinates3 = [[[drylineValues[2].cityACoord.lon, drylineValues[2].cityACoord.lat], [drylineValues[2].cityBCoord.lon, drylineValues[2].cityBCoord.lat]]];
+//
+		// highest delta dryline
+		var points = ToolsService.getPerpendicularLine(
+			{lat:drylineValues[0].cityACoord.lat,lon:drylineValues[0].cityACoord.lon},
+			{lat:drylineValues[0].cityBCoord.lat,lon:drylineValues[0].cityBCoord.lon}
+		);
+		var drylineCoordinates1 = [[[points.pointA.lon, points.pointA.lat],[points.pointB.lon, points.pointB.lat]]];
+		// 2nd
+		var points = ToolsService.getPerpendicularLine(
+			{lat:drylineValues[1].cityACoord.lat,lon:drylineValues[1].cityACoord.lon},
+			{lat:drylineValues[1].cityBCoord.lat,lon:drylineValues[1].cityBCoord.lon}
+		);
+		var drylineCoordinates2 = [[[points.pointA.lon, points.pointA.lat],[points.pointB.lon, points.pointB.lat]]];
+		// 3rd
+		var points = ToolsService.getPerpendicularLine(
+			{lat:drylineValues[2].cityACoord.lat,lon:drylineValues[2].cityACoord.lon},
+			{lat:drylineValues[2].cityBCoord.lat,lon:drylineValues[2].cityBCoord.lon}
+		);
+		var drylineCoordinates3 = [[[points.pointA.lon, points.pointA.lat],[points.pointB.lon, points.pointB.lat]]];
 		var myData = {
-		  "type": "FeatureCollection",
-		  "features": [
-		    {
-		      "type": "Feature",
-		      "properties": {
-			"letter": "G",
-			"color": "blue",
-			"rank": "7",
-			"ascii": "71"
-		      },
-		      "geometry": {
-//			"type": "Polygon",
-/*			"coordinates": [
-			  [
-			    [123.61, -22.14], [122.38, -21.73], [121.06, -21.69], [119.66, -22.22], [119.00, -23.40],
-			    [118.65, -24.76], [118.43, -26.07], [118.78, -27.56], [119.22, -28.57], [120.23, -29.49],
-			    [121.77, -29.87], [123.57, -29.64], [124.45, -29.03], [124.71, -27.95], [124.80, -26.70],
-			    [124.80, -25.60], [123.61, -25.64], [122.56, -25.64], [121.72, -25.72], [121.81, -26.62],
-			    [121.86, -26.98], [122.60, -26.90], [123.57, -27.05], [123.57, -27.68], [123.35, -28.18],
-			    [122.51, -28.38], [121.77, -28.26], [121.02, -27.91], [120.49, -27.21], [120.14, -26.50],
-			    [120.10, -25.64], [120.27, -24.52], [120.67, -23.68], [121.72, -23.32], [122.43, -23.48],
-			    [123.04, -24.04], [124.54, -24.28], [124.58, -23.20], [123.61, -22.14]
-			  ]
-			]*/
-			"type": "MultiLineString",
-			"coordinates": drylineCoordinates
-//			"coordinates": [[[-97.93, 29.89],[-97.93, 30.08]]]
-		      }
-		    }
-		  ]
+		  	"type": "FeatureCollection",	
+		 	"features": [
+		    		{
+		      			"type": "Feature",
+					"properties": {
+						"delta": drylineValues[0].delta,
+					},
+				      	"geometry": {
+						"type": "MultiLineString",
+						"coordinates": drylineCoordinates1
+				      	},
+					"style" : {
+						"strokeColor" : "green",
+						"strokeWeight" : 4
+					}
+		    		},
+				{
+		      			"type": "Feature",
+					"properties": {
+						"delta": drylineValues[1].delta,
+					},
+				      	"geometry": {
+						"type": "MultiLineString",
+						"coordinates": drylineCoordinates2
+				      	},
+					"style" : {
+						"strokeColor" : "green",
+						"strokeWeight" : 4
+					}
+		    		},
+				{
+                                        "type": "Feature",
+                                        "properties": {
+                                                "delta": drylineValues[2].delta,
+                                        },
+                                        "geometry": {
+                                                "type": "MultiLineString",
+                                                "coordinates": drylineCoordinates3
+                                        },
+                                        "style" : {
+                                                "strokeColor" : "green",
+                                                "strokeWeight" : 4
+                                        }
+                                },
+		  	]
 		};
-
 		map.data.addGeoJson(myData);
-//		map.data.loadGeoJson('https://storage.googleapis.com/maps-devrel/google.json');
-
-		var featureStyle = {
-//		    fillColor: 'green',
-			strokeColor: 'green',
-			strokeWeight: 4
-		}
-		map.data.setStyle(featureStyle);
+		map.data.setStyle(function(feature) {
+		    	var delta = feature.getProperty('delta');
+			var color = 'blue';
+			if (delta > 1)
+				color = 'red';
+			else if (delta > .75)
+				color = 'orange';
+			else if (delta > .5)
+				color = 'yellow';
+			else if (delta > .1)
+				color = 'green';
+		    	return {
+		      		strokeColor: color,
+		      		strokeWeight: 4
+		    	};
+		});
 
 		// add markers
 		var markers = {};
