@@ -15,57 +15,6 @@ function MapsService(ConversionsService, WxAttributesService, ToolsService){
 		this.drawGoogleMap(arrCities, currentRegion, containerId);
 	}
 
-/*
-	// draws open layer map 
-	// input: arrCities - array of cities and their related data
-        //      : currentRegion - current region of cities to limit list to and focus map on
-        //      : containerId - div to put the map in   
-	this.drawOpenLayerMap = function(arrCities, currentRegion, containerId){
-		// filter out cities by region
-                var arr = [];
-                for (var i = 0;i < arrCities.length; i++){
-                        if (arrCities[i].region == currentRegion){
-                                arr.push(arrCities[i]);
-                        }
-                }
-                arrCities = arr;
-
-		// http://www.peterrobins.co.uk/it/olchangingprojection.html
-		//Maps Center 
-		var lat = arrCities[0].coord.lat; 
-		var lon = arrCities[0].coord.lon;
-console.log(lat);
-console.log(lon);
-//		lat = 7486473;
-//		lon = 4193332;
-		var lonlat = new OpenLayers.LonLat(lon, lat);
-	    	var map = new OpenLayers.Map(containerId);
-
-
-		// Create overlays
-
-		// OSM layer
-	    	var mapnik = new OpenLayers.Layer.OSM();
-		// stations layer
-		var stations = new OpenLayers.Layer.Vector.OWMStations("Stations");
-		// weather layer
-		var city = new OpenLayers.Layer.Vector.OWMWeather("Weather");
-
-		//connect layers to map
-		map.addLayers([mapnik, stations, city]);
-
-		//Add Layers swither
-		map.addControl(new OpenLayers.Control.LayerSwitcher());       	
-
-		map.setCenter( lonlat, 10 );
-
-		// Add popups 
-		var selectControl = new OpenLayers.Control.SelectFeature([city,stations]);
-		map.addControl(selectControl);
-		selectControl.activate(); 
-	}
-*/
-
 	// draws google map with markers and popups for indicated locations
 	// input: arrCities - array of cities and their related data
 	//      : currentRegion - current region of cities to limit list to and focus map on
@@ -81,85 +30,77 @@ console.log(lon);
 		arrCities = arr;
 
 		// draw map
+		var focusCoords = {};
+		switch (currentRegion){
+			case 'TX': 
+				focusCoords.zoom = 7;
+				focusCoords.lat = 30.76;
+				focusCoords.lon = -98.68;
+				break;
+			case 'OK': 
+				focusCoords.zoom = 8;
+				focusCoords.lat = 35.47;
+				focusCoords.lon = -97.52;
+				break;
+		}
 		var mapOptions = {
-			center: { lat: arrCities[0].coord.lat, lng: arrCities[0].coord.lon},
-			zoom: 8
+			center: { lat: focusCoords.lat, lng: focusCoords.lon},
+			zoom: focusCoords.zoom
 		};
 		var map = new google.maps.Map(document.getElementById(containerId), mapOptions);
 	
 		// add dryline layers
 		// - http://geojson.org/geojson-spec.html#linestring	
 		var drylineValues = WxAttributesService.calculateDrylineValues(arrCities, currentRegion);
-//		var drylineCoordinates1 = [[[drylineValues[0].cityACoord.lon, drylineValues[0].cityACoord.lat], [drylineValues[0].cityBCoord.lon, drylineValues[0].cityBCoord.lat]]];
-//		var drylineCoordinates2 = [[[drylineValues[1].cityACoord.lon, drylineValues[1].cityACoord.lat], [drylineValues[1].cityBCoord.lon, drylineValues[1].cityBCoord.lat]]];
-//		var drylineCoordinates3 = [[[drylineValues[2].cityACoord.lon, drylineValues[2].cityACoord.lat], [drylineValues[2].cityBCoord.lon, drylineValues[2].cityBCoord.lat]]];
-//
-		// highest delta dryline
-		var points = ToolsService.getPerpendicularLine(
-			{lat:drylineValues[0].cityACoord.lat,lon:drylineValues[0].cityACoord.lon},
-			{lat:drylineValues[0].cityBCoord.lat,lon:drylineValues[0].cityBCoord.lon}
-		);
-		var drylineCoordinates1 = [[[points.pointA.lon, points.pointA.lat],[points.pointB.lon, points.pointB.lat]]];
-		// 2nd
-		var points = ToolsService.getPerpendicularLine(
-			{lat:drylineValues[1].cityACoord.lat,lon:drylineValues[1].cityACoord.lon},
-			{lat:drylineValues[1].cityBCoord.lat,lon:drylineValues[1].cityBCoord.lon}
-		);
-		var drylineCoordinates2 = [[[points.pointA.lon, points.pointA.lat],[points.pointB.lon, points.pointB.lat]]];
-		// 3rd
-		var points = ToolsService.getPerpendicularLine(
-			{lat:drylineValues[2].cityACoord.lat,lon:drylineValues[2].cityACoord.lon},
-			{lat:drylineValues[2].cityBCoord.lat,lon:drylineValues[2].cityBCoord.lon}
-		);
-		var drylineCoordinates3 = [[[points.pointA.lon, points.pointA.lat],[points.pointB.lon, points.pointB.lat]]];
+
+		// calculate the top delta's in drylines
+		var drylineCoordinates = [];
+		for (var i = 0; i < 6;i++){
+			var points = ToolsService.getPerpendicularLine(
+				{lat:drylineValues[i].cityACoord.lat,lon:drylineValues[i].cityACoord.lon},
+				{lat:drylineValues[i].cityBCoord.lat,lon:drylineValues[i].cityBCoord.lon}
+			);
+			drylineCoordinates.push({
+				coords : [[[points.pointA.lon, points.pointA.lat],[points.pointB.lon, points.pointB.lat]]],
+				delta : drylineValues[i].delta
+			});
+		}
+
+		// define generic feature template
+		var featureTemplate = {
+			"type": "Feature",
+			"properties": {
+				"delta": undefined,
+			},
+			"geometry": {
+				"type": "MultiLineString",
+				"coordinates": undefined
+			},
+			"style" : {
+				"strokeColor" : "green",
+				"strokeWeight" : 4
+			}
+		}
+		
+		// define features data geoJSON object
 		var myData = {
-		  	"type": "FeatureCollection",	
-		 	"features": [
-		    		{
-		      			"type": "Feature",
-					"properties": {
-						"delta": drylineValues[0].delta,
-					},
-				      	"geometry": {
-						"type": "MultiLineString",
-						"coordinates": drylineCoordinates1
-				      	},
-					"style" : {
-						"strokeColor" : "green",
-						"strokeWeight" : 4
-					}
-		    		},
-				{
-		      			"type": "Feature",
-					"properties": {
-						"delta": drylineValues[1].delta,
-					},
-				      	"geometry": {
-						"type": "MultiLineString",
-						"coordinates": drylineCoordinates2
-				      	},
-					"style" : {
-						"strokeColor" : "green",
-						"strokeWeight" : 4
-					}
-		    		},
-				{
-                                        "type": "Feature",
-                                        "properties": {
-                                                "delta": drylineValues[2].delta,
-                                        },
-                                        "geometry": {
-                                                "type": "MultiLineString",
-                                                "coordinates": drylineCoordinates3
-                                        },
-                                        "style" : {
-                                                "strokeColor" : "green",
-                                                "strokeWeight" : 4
-                                        }
-                                },
-		  	]
+                        "type": "FeatureCollection",
+                        "features": []
 		};
+
+		// add features for each dryline to be displayed
+		for (var i = 0;i < drylineCoordinates.length;i++){
+			// clone object
+			var feature = JSON.parse(JSON.stringify(featureTemplate));
+			feature.properties.delta = drylineCoordinates[i].delta;
+			feature.geometry.coordinates = drylineCoordinates[i].coords;
+			myData.features.push(feature);
+		}
+
+		// render geoJSON data
 		map.data.addGeoJson(myData);
+
+		// set colors on drylines based on delta
 		map.data.setStyle(function(feature) {
 		    	var delta = feature.getProperty('delta');
 			var color = 'blue';
@@ -177,7 +118,7 @@ console.log(lon);
 		    	};
 		});
 
-		// add markers
+		// add markers (icons/popups)
 		var markers = {};
 		for (var i = 0;i < arrCities.length;i++){
 			(function(){

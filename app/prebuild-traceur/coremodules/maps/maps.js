@@ -2581,76 +2581,64 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
           }
         }
         arrCities = arr;
+        var focusCoords = {};
+        switch (currentRegion) {
+          case 'TX':
+            focusCoords.zoom = 7;
+            focusCoords.lat = 30.76;
+            focusCoords.lon = -98.68;
+            break;
+          case 'OK':
+            focusCoords.zoom = 8;
+            focusCoords.lat = 35.47;
+            focusCoords.lon = -97.52;
+            break;
+        }
         var mapOptions = {
           center: {
-            lat: arrCities[0].coord.lat,
-            lng: arrCities[0].coord.lon
+            lat: focusCoords.lat,
+            lng: focusCoords.lon
           },
-          zoom: 8
+          zoom: focusCoords.zoom
         };
         var map = new google.maps.Map(document.getElementById(containerId), mapOptions);
         var drylineValues = WxAttributesService.calculateDrylineValues(arrCities, currentRegion);
-        var points = ToolsService.getPerpendicularLine({
-          lat: drylineValues[0].cityACoord.lat,
-          lon: drylineValues[0].cityACoord.lon
-        }, {
-          lat: drylineValues[0].cityBCoord.lat,
-          lon: drylineValues[0].cityBCoord.lon
-        });
-        var drylineCoordinates1 = [[[points.pointA.lon, points.pointA.lat], [points.pointB.lon, points.pointB.lat]]];
-        var points = ToolsService.getPerpendicularLine({
-          lat: drylineValues[1].cityACoord.lat,
-          lon: drylineValues[1].cityACoord.lon
-        }, {
-          lat: drylineValues[1].cityBCoord.lat,
-          lon: drylineValues[1].cityBCoord.lon
-        });
-        var drylineCoordinates2 = [[[points.pointA.lon, points.pointA.lat], [points.pointB.lon, points.pointB.lat]]];
-        var points = ToolsService.getPerpendicularLine({
-          lat: drylineValues[2].cityACoord.lat,
-          lon: drylineValues[2].cityACoord.lon
-        }, {
-          lat: drylineValues[2].cityBCoord.lat,
-          lon: drylineValues[2].cityBCoord.lon
-        });
-        var drylineCoordinates3 = [[[points.pointA.lon, points.pointA.lat], [points.pointB.lon, points.pointB.lat]]];
+        var drylineCoordinates = [];
+        for (var i = 0; i < 6; i++) {
+          var points = ToolsService.getPerpendicularLine({
+            lat: drylineValues[i].cityACoord.lat,
+            lon: drylineValues[i].cityACoord.lon
+          }, {
+            lat: drylineValues[i].cityBCoord.lat,
+            lon: drylineValues[i].cityBCoord.lon
+          });
+          drylineCoordinates.push({
+            coords: [[[points.pointA.lon, points.pointA.lat], [points.pointB.lon, points.pointB.lat]]],
+            delta: drylineValues[i].delta
+          });
+        }
+        var featureTemplate = {
+          "type": "Feature",
+          "properties": {"delta": undefined},
+          "geometry": {
+            "type": "MultiLineString",
+            "coordinates": undefined
+          },
+          "style": {
+            "strokeColor": "green",
+            "strokeWeight": 4
+          }
+        };
         var myData = {
           "type": "FeatureCollection",
-          "features": [{
-            "type": "Feature",
-            "properties": {"delta": drylineValues[0].delta},
-            "geometry": {
-              "type": "MultiLineString",
-              "coordinates": drylineCoordinates1
-            },
-            "style": {
-              "strokeColor": "green",
-              "strokeWeight": 4
-            }
-          }, {
-            "type": "Feature",
-            "properties": {"delta": drylineValues[1].delta},
-            "geometry": {
-              "type": "MultiLineString",
-              "coordinates": drylineCoordinates2
-            },
-            "style": {
-              "strokeColor": "green",
-              "strokeWeight": 4
-            }
-          }, {
-            "type": "Feature",
-            "properties": {"delta": drylineValues[2].delta},
-            "geometry": {
-              "type": "MultiLineString",
-              "coordinates": drylineCoordinates3
-            },
-            "style": {
-              "strokeColor": "green",
-              "strokeWeight": 4
-            }
-          }]
+          "features": []
         };
+        for (var i = 0; i < drylineCoordinates.length; i++) {
+          var feature = JSON.parse(JSON.stringify(featureTemplate));
+          feature.properties.delta = drylineCoordinates[i].delta;
+          feature.geometry.coordinates = drylineCoordinates[i].coords;
+          myData.features.push(feature);
+        }
         map.data.addGeoJson(myData);
         map.data.setStyle(function(feature) {
           var delta = feature.getProperty('delta');
