@@ -24,8 +24,8 @@
 			</div>
 			<div id="cityTable" class="table_container" style="height:200px;overflow-y:auto;">
 				<table class="table table-striped">
-					<tr ng-repeat="city in ctrl.cities | orderBy:ctrl.sortOrder | filter:{region:ctrl.currentRegion} | filter:{name:ctrl.searchText}">
-						<td ng-class="{table_cell_background : city.selected}" class="table_cell" style="font-weight:bold;" ng-click="ctrl.selectCity(city)">{{city.name}}</td>
+					<tr ng-repeat="city in ctrl.cities | orderBy:ctrl.sortOrder | filter:{region:ctrl.currentRegion} | filter:{name:ctrl.searchText}" ng-click="ctrl.selectCity(city)">
+						<td ng-class="{table_cell_background : city.selected}" class="table_cell" style="font-weight:bold;">{{city.name}}</td>
 						<td ng-class="{table_cell_background : city.selected}" class="table_cell">{{city.main.temp | TemperatureFilter}} &deg;F</td>
 						<td ng-class="{table_cell_background : city.selected}" class="table_cell">{{city.main.pressure}} mb</td>
 						<td ng-class="{table_cell_background : city.selected}" class="table_cell">{{city.main.humidity}} %</td>
