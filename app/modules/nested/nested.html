@@ -1,0 +1,29 @@
+<div ng-controller="MainController">
+    <label>Primitive</label>
+    <input type="text" ng-model="name">
+
+    <label>Object</label>
+    <input type="text" ng-model="user.name">
+
+    <div class="nested" ng-controller="NestedController">
+        <label>Primitive</label>
+        <input type="text" ng-model="name">
+
+        <label>Primitive with explicit $parent reference</label>
+        <input type="text" ng-model="$parent.name">
+
+        <label>Object</label>
+        <input type="text" ng-model="user.name">
+    </div>
+
+    <div class="nested" ng-controller="Nested2Controller as ctrl">
+        <button ng-click="ctrl.getData()">Get Data</button>
+
+        <table>
+            <tr ng-repeat="info in ctrl.infoData">
+                <td>{{info.name}}</td>
+                <td>{{info.url}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

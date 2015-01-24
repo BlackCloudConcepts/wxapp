@@ -9,6 +9,7 @@ angular.module('wxApp', [
 	'wxApp.modules.logout',
 	'wxApp.modules.es6',
 	'wxApp.modules.footer',
+	'wxApp.modules.nested',
   	'wxApp.filters',
   	'wxApp.services',
   	'wxApp.directives',
