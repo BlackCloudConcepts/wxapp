@@ -10,6 +10,7 @@ angular.module('wxApp', [
 	'wxApp.modules.es6',
 	'wxApp.modules.footer',
 	'wxApp.modules.nested',
+	'wxApp.modules.templating',
   	'wxApp.filters',
   	'wxApp.services',
   	'wxApp.directives',
