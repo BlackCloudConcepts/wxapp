@@ -110,6 +110,7 @@ module.exports = function (grunt) {
 					'app/lib/angular/angular.js',
 					'app/lib/angular/angular-route.js',
 					'app/lib/angular/angular-sanitize.js',
+					'app/lib/angular/angular-resource.js',
 					'app/js/app.js',
 					'app/js/services.js',
 					'app/js/controllers.js',

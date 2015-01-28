@@ -2,7 +2,7 @@
 (function () {
   // START IIFE
 
-  angular.module("wxApp.modules.nested", [])
+  angular.module("wxApp.modules.nested", ["ngResource"])
 
   // Declared route
   .config(["$routeProvider", function ($routeProvider) {
@@ -13,11 +13,11 @@
   }])
 
   // Define controller, services, factories, providers, filters
-  .controller("MainController", MainController).controller("NestedController", NestedController).controller("Nested2Controller", Nested2Controller);
+  .controller("NestedMainController", NestedMainController).controller("NestedController", NestedController).controller("Nested2Controller", Nested2Controller);
 
   // Dependency injections to controller, services, factories, providers, filters
-  MainController.$inject = ["$scope", "$rootScope"];
-  NestedController.$inject = ["$scope", "$rootScope"];
+  NestedMainController.$inject = ["$scope", "$rootScope"];
+  NestedController.$inject = ["$scope", "$rootScope", "$resource"];
   Nested2Controller.$inject = ["$scope", "$rootScope", "$http"];
 
   // Sharing models between nested controllers
@@ -25,7 +25,7 @@
   // Broadcast, emit, on
   // - http://toddmotto.com/all-about-angulars-emit-broadcast-on-publish-subscribing/
   // - http://www.objectpartners.com/2013/08/21/using-services-and-messages-to-share-data-between-controllers-in-angularjs/
-  function MainController($scope, $rootScope) {
+  function NestedMainController($scope, $rootScope) {
     $scope.mainname = "main";
 
     // broadcast a message "down" from the parent to the child
@@ -39,7 +39,8 @@
     });
   }
 
-  function NestedController($scope, $rootScope) {
+  function NestedController($scope, $rootScope, $resource) {
+    var self = this;
     $scope.nestedname = "nested";
 
     // listen "on" the child for a message "broadcast" from the parent
@@ -53,6 +54,20 @@
     $rootScope.$on("siblingmessage", function (event, args) {
       console.log(args);
     });
+
+    // sample data call using $resource
+    this.getData = function () {
+      var infoResource = $resource("http://96.126.120.64:8126", { action: "find", collection: "info", callback: "JSON_CALLBACK" }, {
+        request: {
+          method: "JSONP"
+        }
+      });
+      infoResource.request().$promise.then(function (data) {
+        self.infoData = data.data;
+      }, function (err) {
+        console.log(err);
+      });
+    };
   }
 
   function Nested2Controller($scope, $rootScope, $http) {
@@ -65,7 +80,7 @@
     // - http://toddmotto.com/all-about-angulars-emit-broadcast-on-publish-subscribing/
     $rootScope.$emit("siblingmessage", { message: "hello from your sibling" });
 
-    // sample data call
+    // sample data call using $http
     this.getData = function () {
       $http.jsonp("http://96.126.120.64:8126/?action=find&collection=info&callback=JSON_CALLBACK").success(function (data, status, headers, config) {
         self.infoData = data.data;

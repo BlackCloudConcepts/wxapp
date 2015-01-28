@@ -2567,13 +2567,13 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
   "use strict";
   'use strict';
   (function() {
-    angular.module('wxApp.modules.nested', []).config(['$routeProvider', function($routeProvider) {
+    angular.module('wxApp.modules.nested', ['ngResource']).config(['$routeProvider', function($routeProvider) {
       $routeProvider.when('/nested', {templateUrl: 'modules/nested/nested.html'});
-    }]).controller('MainController', MainController).controller('NestedController', NestedController).controller('Nested2Controller', Nested2Controller);
-    MainController.$inject = ['$scope', '$rootScope'];
-    NestedController.$inject = ['$scope', '$rootScope'];
+    }]).controller('NestedMainController', NestedMainController).controller('NestedController', NestedController).controller('Nested2Controller', Nested2Controller);
+    NestedMainController.$inject = ['$scope', '$rootScope'];
+    NestedController.$inject = ['$scope', '$rootScope', '$resource'];
     Nested2Controller.$inject = ['$scope', '$rootScope', '$http'];
-    function MainController($scope, $rootScope) {
+    function NestedMainController($scope, $rootScope) {
       $scope.mainname = "main";
       setTimeout(function() {
         $scope.$broadcast('parenttochildmessage', {message: 'from parent to child'});
@@ -2582,7 +2582,8 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
         console.log(args);
       });
     }
-    function NestedController($scope, $rootScope) {
+    function NestedController($scope, $rootScope, $resource) {
+      var self = this;
       $scope.nestedname = "nested";
       $scope.$on('parenttochildmessage', function(event, args) {
         console.log(args);
@@ -2591,6 +2592,18 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       $rootScope.$on('siblingmessage', function(event, args) {
         console.log(args);
       });
+      this.getData = function() {
+        var infoResource = $resource('http://96.126.120.64:8126', {
+          action: 'find',
+          collection: 'info',
+          callback: 'JSON_CALLBACK'
+        }, {request: {method: 'JSONP'}});
+        infoResource.request().$promise.then(function(data) {
+          self.infoData = data.data;
+        }, function(err) {
+          console.log(err);
+        });
+      };
     }
     function Nested2Controller($scope, $rootScope, $http) {
       var self = this;
