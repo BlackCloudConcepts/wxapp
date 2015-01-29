@@ -15,25 +15,8 @@
 
         <label>Object</label>
         <input type="text" ng-model="user.name">
-        <div>
-            <button ng-click="ctrl.getData()">Get Data $resource</button>
-        </div>
-        <table>
-            <tr ng-repeat="info in ctrl.infoData">
-                <td>{{info.name}}</td>
-                <td>{{info.url}}</td>
-            </tr>
-        </table>
     </div>
 
     <div class="nested" ng-controller="Nested2Controller as ctrl">
-        <button ng-click="ctrl.getData()">Get Data $http</button>
-
-        <table>
-            <tr ng-repeat="info in ctrl.infoData">
-                <td>{{info.name}}</td>
-                <td>{{info.url}}</td>
-            </tr>
-        </table>
     </div>
 </div>

@@ -2567,33 +2567,74 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
   "use strict";
   'use strict';
   (function() {
-    angular.module('wxApp.modules.templating', []).config(['$routeProvider', function($routeProvider) {
+    angular.module('wxApp.modules.templating', ['ngRoute', 'ngResource', 'restangular']).config(['$routeProvider', 'RestangularProvider', function($routeProvider, RestangularProvider) {
       $routeProvider.when('/templating', {templateUrl: 'modules/templating/templating.html'});
-    }]).controller('MainController', MainController).controller('OneController', OneController).controller('TwoController', TwoController);
-    MainController.$inject = ['$scope'];
-    OneController.$inject = ['$scope'];
-    TwoController.$inject = ['$scope'];
-    function MainController($scope) {
+      RestangularProvider.setBaseUrl('http://96.126.120.64:8126');
+      RestangularProvider.setDefaultRequestParams('jsonp', {callback: 'JSON_CALLBACK'});
+    }]).controller('TemplatingController', TemplatingController).controller('HttpController', HttpController).controller('NgResourceController', NgResourceController).controller('RestangularController', RestangularController);
+    TemplatingController.$inject = ['$scope'];
+    HttpController.$inject = ['$scope', '$http'];
+    NgResourceController.$inject = ['$scope', '$resource'];
+    RestangularController.$inject = ['$scope', 'Restangular'];
+    function TemplatingController($scope) {
       $scope.templates = [{
-        name: 'one',
-        url: 'modules/templating/one.html'
+        name: 'http',
+        url: 'modules/templating/http.html'
       }, {
-        name: 'two',
-        url: 'modules/templating/two.html'
+        name: 'ngresource',
+        url: 'modules/templating/ngresource.html'
+      }, {
+        name: 'restangular',
+        url: 'modules/templating/restangular.html'
       }];
       $scope.template = $scope.templates[0];
-      $scope.switchToOne = function() {
+      $scope.switchToHttp = function() {
         $scope.template = $scope.templates[0];
       };
-      $scope.switchToTwo = function() {
+      $scope.switchToNgResource = function() {
         $scope.template = $scope.templates[1];
       };
+      $scope.switchToRestangular = function() {
+        $scope.template = $scope.templates[2];
+      };
     }
-    function OneController($scope) {
-      $scope.name = "You are viewing template ONE";
+    function HttpController($scope, $http) {
+      var self = this;
+      $scope.name = "You are viewing template Http";
+      this.getData = function() {
+        $http.jsonp('http://96.126.120.64:8126/?action=find&collection=info&callback=JSON_CALLBACK').success(function(data, status, headers, config) {
+          self.infoData = data.data;
+        }).error(function(data, status, headers, config) {
+          console.log('ERROR');
+        });
+      };
     }
-    function TwoController($scope) {
-      $scope.name = "You are viewing template TWO";
+    function NgResourceController($scope, $resource) {
+      var self = this;
+      $scope.name = "You are viewing template NgResource";
+      this.getData = function() {
+        var infoResource = $resource('http://96.126.120.64:8126', {
+          action: 'find',
+          collection: 'info',
+          callback: 'JSON_CALLBACK'
+        }, {request: {method: 'JSONP'}});
+        infoResource.request().$promise.then(function(data) {
+          self.infoData = data.data;
+        }, function(err) {
+          console.log(err);
+        });
+      };
+    }
+    function RestangularController($scope, Restangular) {
+      var self = this;
+      $scope.name = "You are viewing template Restangular";
+      this.getData = function() {
+        Restangular.setJsonp(true);
+        var baseInfo = Restangular.one('?action=find&collection=info');
+        baseInfo.get().then(function(data) {
+          self.infoData = data.data;
+        });
+      };
     }
   })();
   return {};

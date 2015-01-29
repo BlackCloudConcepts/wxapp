@@ -1,7 +1,7 @@
 'use strict';
 (function(){ // START IIFE
 
-    angular.module('wxApp.modules.nested', ['ngResource'])
+    angular.module('wxApp.modules.nested', [])
 
     // Declared route 
     .config(['$routeProvider', function($routeProvider) {
@@ -18,8 +18,8 @@
 
     // Dependency injections to controller, services, factories, providers, filters
     NestedMainController.$inject =  ['$scope', '$rootScope'];
-    NestedController.$inject =  ['$scope', '$rootScope', '$resource'];
-    Nested2Controller.$inject =  ['$scope', '$rootScope', '$http'];
+    NestedController.$inject =  ['$scope', '$rootScope'];
+    Nested2Controller.$inject =  ['$scope', '$rootScope'];
 
     // Sharing models between nested controllers
     // - http://fdietz.github.io/recipes-with-angular-js/controllers/sharing-models-between-nested-controllers.html
@@ -40,7 +40,7 @@
         });
     }
 
-    function NestedController($scope, $rootScope, $resource) {
+    function NestedController($scope, $rootScope) {
         var self = this;
         $scope.nestedname = "nested";
 
@@ -56,47 +56,16 @@
             console.log(args);
         });
 
-        // sample data call using $resource
-        this.getData = function(){
-            var infoResource = $resource('http://96.126.120.64:8126', {action:'find',collection:'info', callback:'JSON_CALLBACK'},
-                {
-                    request :{
-                        method: 'JSONP'
-                    }
-                }
-            );
-            infoResource.request().$promise.then(
-                function(data){
-                    self.infoData = data.data;
-                },
-                function(err){
-                    console.log(err);
-                }
-            );
-        };
-
     }
 
-    function Nested2Controller($scope, $rootScope, $http) {
+    function Nested2Controller($scope, $rootScope) {
         var self = this;
-        this.infoData = [];	
 
         // "emit" or "broadcast" a message on the rootScope
         // - emit will send message only on rootScope
         // - broadcast will send message on rootScope as well as scope
         // - http://toddmotto.com/all-about-angulars-emit-broadcast-on-publish-subscribing/
         $rootScope.$emit('siblingmessage', {message:'hello from your sibling'});
-
-        // sample data call using $http
-        this.getData = function(){
-            $http.jsonp('http://96.126.120.64:8126/?action=find&collection=info&callback=JSON_CALLBACK')
-                .success(function(data, status, headers, config) {
-                    self.infoData = data.data;
-                })
-                .error(function(data, status, headers, config) {
-                    console.log('ERROR');
-                });
-        };
 
     }
 

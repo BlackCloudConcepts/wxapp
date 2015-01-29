@@ -1,0 +1,12 @@
+<div ng-controller="HttpController as ctrl">
+    <div>{{name}}</div>
+    <div>
+        <button ng-click="ctrl.getData()">Get Data</button>
+    </div>
+    <table>
+        <tr ng-repeat="info in ctrl.infoData">
+            <td>{{info.name}}</td>
+            <td>{{info.url}}</td>
+        </tr>
+    </table> 
+</div>
