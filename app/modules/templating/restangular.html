@@ -3,6 +3,7 @@
     <div>
         <button ng-click="ctrl.getData()">Get Data</button>
     </div>
+    <div ui-grid="{ data: ctrl.infoData }" style="width:500px;height:250px;" class="myGrid"></div>
     <table>
         <tr ng-repeat="info in ctrl.infoData">
             <td>{{info.name}}</td>

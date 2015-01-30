@@ -2567,7 +2567,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
   "use strict";
   'use strict';
   (function() {
-    angular.module('wxApp.modules.templating', ['ngRoute', 'ngResource', 'restangular']).config(['$routeProvider', 'RestangularProvider', function($routeProvider, RestangularProvider) {
+    angular.module('wxApp.modules.templating', ['ngRoute', 'ngResource', 'restangular', 'ui.grid']).config(['$routeProvider', 'RestangularProvider', function($routeProvider, RestangularProvider) {
       $routeProvider.when('/templating', {templateUrl: 'modules/templating/templating.html'});
       RestangularProvider.setBaseUrl('http://96.126.120.64:8126');
       RestangularProvider.setDefaultRequestParams('jsonp', {callback: 'JSON_CALLBACK'});

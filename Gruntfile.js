@@ -105,12 +105,20 @@ module.exports = function (grunt) {
       			}
     		},
     		my_target: {
-      			files: {
+      			files: {  // https://code.angularjs.org/1.3.11/
         			'app/build/wxapp.min.js': [
-					'app/lib/angular/angular.js',
-					'app/lib/angular/angular-route.js',
-					'app/lib/angular/angular-sanitize.js',
-					'app/lib/angular/angular-resource.js',
+                    'app/lib/angular/angular1.2.0/angular.js',
+					'app/lib/angular/angular1.2.0/angular-route.js',
+					'app/lib/angular/angular1.2.0/angular-sanitize.js',
+					'app/lib/angular/angular1.2.0/angular-resource.js',
+//                    'app/lib/angular/angular1.2.0/angular-animate.min.js',
+/*
+					'app/lib/angular/angular1.3.11/angular.js',
+					'app/lib/angular/angular1.3.11/angular-route.js',
+					'app/lib/angular/angular1.3.11/angular-sanitize.js',
+					'app/lib/angular/angular1.3.11/angular-resource.js',
+                    'app/lib/angular/angular1.3.11/angular-animate.min.js',
+*/
 					'app/js/app.js',
 					'app/js/services.js',
 					'app/js/controllers.js',

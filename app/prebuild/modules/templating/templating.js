@@ -2,7 +2,7 @@
 (function () {
   // START IIFE
 
-  angular.module("wxApp.modules.templating", ["ngRoute", "ngResource", "restangular"])
+  angular.module("wxApp.modules.templating", ["ngRoute", "ngResource", "restangular", "ui.grid"])
 
   // Declared route
   .config(["$routeProvider", "RestangularProvider", function ($routeProvider, RestangularProvider) {
