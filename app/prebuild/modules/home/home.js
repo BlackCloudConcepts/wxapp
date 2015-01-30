@@ -42,6 +42,7 @@
     this.sortOrder = this.sortOrderItems[0];
     this.compare1 = undefined;
     this.compare2 = undefined;
+    this.searchText = "";
 
     // checks that cookie is set
     // output : boolean

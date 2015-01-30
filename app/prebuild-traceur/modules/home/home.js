@@ -2589,6 +2589,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       this.sortOrder = this.sortOrderItems[0];
       this.compare1 = undefined;
       this.compare2 = undefined;
+      this.searchText = "";
       this.testCookie = function() {
         if (CookiesService.getCookie('username') != '') {
           return true;

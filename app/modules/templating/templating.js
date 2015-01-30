@@ -1,7 +1,7 @@
 'use strict';
 (function(){ // START IIFE
 
-    angular.module('wxApp.modules.templating', ['ngRoute', 'ngResource', 'restangular', 'ui.grid'])
+    angular.module('wxApp.modules.templating', ['ngRoute', 'ngResource', 'restangular', 'ui.grid', 'ngAnimate'])
 
     // Declared route 
     .config(['$routeProvider', 'RestangularProvider', function($routeProvider, RestangularProvider) {
@@ -10,7 +10,7 @@
             //        controller: 'HomeCtrl' (removed since the html was also referencing the controller causing it to happen twice)
         });
         RestangularProvider.setBaseUrl('http://96.126.120.64:8126');
-        RestangularProvider.setDefaultRequestParams('jsonp', {callback: 'JSON_CALLBACK'});
+            RestangularProvider.setDefaultRequestParams('jsonp', {callback: 'JSON_CALLBACK'});
     }])
     // Define controller, services, factories, providers, filters
     .controller('TemplatingController', TemplatingController)
@@ -96,15 +96,49 @@
     function RestangularController($scope, Restangular){
         var self = this;
         $scope.name = "You are viewing template Restangular";
+        this.hideGrid = true;
+        this.gridOptions = {
+            enableSorting: true,
+            enableFiltering: true,
+            columnDefs: [
+                {
+                    field: 'name',
+                    filter: {
+                        noTerm: false,
+                        condition: function(searchTerm, cellValue) {
+                            if (cellValue.indexOf(searchTerm) != -1)
+                                return true;
+                            else
+                                return false;
+                        },
+                        placeholder: 'filter by name'
+                    }
+                },
+                {
+                    field: 'url',
+                    filter: {
+                        noTerm: false,
+                        condition: function(searchTerm, cellValue) {
+                            if (cellValue.indexOf(searchTerm) != -1)
+                                return true;
+                            else
+                                return false;
+                        },
+                        placeholder: 'filter by url'
+                    }
+                }
+            ]
+        };
 
         // sample data call using restangular
         this.getData = function(){
             Restangular.setJsonp(true);
             var baseInfo = Restangular.one('?action=find&collection=info');
             baseInfo.get().then(function(data) {
-                self.infoData = data.data;
+                self.gridOptions.data = data.data;
+                self.hideGrid = false;
             });
-            
+
         };
     }
 

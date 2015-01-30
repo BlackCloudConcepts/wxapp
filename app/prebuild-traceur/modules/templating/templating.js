@@ -2567,7 +2567,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
   "use strict";
   'use strict';
   (function() {
-    angular.module('wxApp.modules.templating', ['ngRoute', 'ngResource', 'restangular', 'ui.grid']).config(['$routeProvider', 'RestangularProvider', function($routeProvider, RestangularProvider) {
+    angular.module('wxApp.modules.templating', ['ngRoute', 'ngResource', 'restangular', 'ui.grid', 'ngAnimate']).config(['$routeProvider', 'RestangularProvider', function($routeProvider, RestangularProvider) {
       $routeProvider.when('/templating', {templateUrl: 'modules/templating/templating.html'});
       RestangularProvider.setBaseUrl('http://96.126.120.64:8126');
       RestangularProvider.setDefaultRequestParams('jsonp', {callback: 'JSON_CALLBACK'});
@@ -2628,11 +2628,42 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
     function RestangularController($scope, Restangular) {
       var self = this;
       $scope.name = "You are viewing template Restangular";
+      this.hideGrid = true;
+      this.gridOptions = {
+        enableSorting: true,
+        enableFiltering: true,
+        columnDefs: [{
+          field: 'name',
+          filter: {
+            noTerm: false,
+            condition: function(searchTerm, cellValue) {
+              if (cellValue.indexOf(searchTerm) != -1)
+                return true;
+              else
+                return false;
+            },
+            placeholder: 'filter by name'
+          }
+        }, {
+          field: 'url',
+          filter: {
+            noTerm: false,
+            condition: function(searchTerm, cellValue) {
+              if (cellValue.indexOf(searchTerm) != -1)
+                return true;
+              else
+                return false;
+            },
+            placeholder: 'filter by url'
+          }
+        }]
+      };
       this.getData = function() {
         Restangular.setJsonp(true);
         var baseInfo = Restangular.one('?action=find&collection=info');
         baseInfo.get().then(function(data) {
-          self.infoData = data.data;
+          self.gridOptions.data = data.data;
+          self.hideGrid = false;
         });
       };
     }
