@@ -10,6 +10,8 @@
       templateUrl: "modules/templating/templating.html" //,
       //        controller: 'HomeCtrl' (removed since the html was also referencing the controller causing it to happen twice)
     });
+
+    // set restangular defaults
     RestangularProvider.setBaseUrl("http://96.126.120.64:8126");
     RestangularProvider.setDefaultRequestParams("jsonp", { callback: "JSON_CALLBACK" });
   }])
@@ -79,6 +81,8 @@
     };
   }
 
+  // restangular : https://github.com/mgonto/restangular#starter-guide
+  // ui-grid : http://ui-grid.info/docs/#/tutorial/101_intro
   function RestangularController($scope, Restangular) {
     var self = this;
     $scope.name = "You are viewing template Restangular";
@@ -109,12 +113,42 @@
 
     // sample data call using restangular
     this.getData = function () {
+      // defaults get and getList to use jsonp calls
       Restangular.setJsonp(true);
+
+      /*           
+                  // example using one / get 
+                  var baseInfo = Restangular.one('?action=find&collection=info');
+                  baseInfo.get().then(function(data) {
+                      self.gridOptions.data = data.data;
+                      self.hideGrid = false;
+                  });
+      */
+
+      // example extending model to format the output
       var baseInfo = Restangular.one("?action=find&collection=info");
+      Restangular.extendModel("?action=find&collection=info", function (model) {
+        model.createLink = function () {
+          for (var i = 0; i < model.data.length; i++) {
+            model.data[i].url = model.data[i].url.replace("http://", "").replace("https://", "");
+          }
+        };
+        return model;
+      });
       baseInfo.get().then(function (data) {
+        data.createLink();
         self.gridOptions.data = data.data;
         self.hideGrid = false;
       });
+
+      /*
+                  // example using customGET
+                  var baseInfo = Restangular.all("").customGET("", {action: "find", collection: "info"});
+                  baseInfo.get("data").then(function(data) {
+                      self.gridOptions.data = data;
+                      self.hideGrid = false;
+                  });
+      */
     };
   }
 

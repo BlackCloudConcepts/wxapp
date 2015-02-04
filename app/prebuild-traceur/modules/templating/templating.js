@@ -2661,7 +2661,16 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
       this.getData = function() {
         Restangular.setJsonp(true);
         var baseInfo = Restangular.one('?action=find&collection=info');
+        Restangular.extendModel("?action=find&collection=info", function(model) {
+          model.createLink = function() {
+            for (var i = 0; i < model.data.length; i++) {
+              model.data[i].url = model.data[i].url.replace('http://', '').replace('https://', '');
+            }
+          };
+          return model;
+        });
         baseInfo.get().then(function(data) {
+          data.createLink();
           self.gridOptions.data = data.data;
           self.hideGrid = false;
         });
