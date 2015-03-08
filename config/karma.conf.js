@@ -63,13 +63,32 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        '../app/prebuild/modules/**/*.js': ['coverage']
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
+
+    coverageReporter: {
+        reporters: [
+            {
+                type: 'html',
+                dir: '../coverage/html/',
+                watermarks: {
+                    statements: [ 15, 50 ],
+                    functions: [ 15, 50 ],
+                    branches: [ 15, 50 ],
+                    lines: [ 15, 50 ]
+                }
+            },
+            {type: 'clover', dir: '../coverage/clover'},
+            {type: 'text', dir: '../coverage/text/', file: 'coverage.txt'},
+            {type: 'text-summary', dir: '../coverage/text/', file: 'coverage-summary.txt'}
+        ]
+    },
 
 
     // web server port
